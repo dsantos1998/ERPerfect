@@ -7,12 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\DSM.ERPerfect.Helpers\DSM.ERPerfect.Helpers.csproj" />
-    <ProjectReference Include="..\DSM.ERPerfect.Models\DSM.ERPerfect.Models.csproj" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="8.0.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Interfaces\" />
+    <ProjectReference Include="..\DSM.ERPerfect.Helpers\DSM.ERPerfect.Helpers.csproj" />
+    <ProjectReference Include="..\DSM.ERPerfect.Models\DSM.ERPerfect.Models.csproj" />
   </ItemGroup>
 
 </Project>

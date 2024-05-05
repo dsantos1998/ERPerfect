@@ -2,11 +2,11 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace DSM.ERPerfect.WebApp.Controllers
 {
-    public class LoginController : BaseController
+    public class BackOfficeController : BaseController
     {
-        private readonly ILogger<LoginController> _logger;
+        private readonly ILogger<BackOfficeController> _logger;
 
-        public LoginController(ILogger<LoginController> logger)
+        public BackOfficeController(ILogger<BackOfficeController> logger)
         {
             _logger = logger;
         }
