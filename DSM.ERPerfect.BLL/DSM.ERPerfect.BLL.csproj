@@ -1,0 +1,19 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\DSM.ERPerfect.DAL\DSM.ERPerfect.DAL.csproj" />
+    <ProjectReference Include="..\DSM.ERPerfect.Helpers\DSM.ERPerfect.Helpers.csproj" />
+    <ProjectReference Include="..\DSM.ERPerfect.Models\DSM.ERPerfect.Models.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Interfaces\" />
+  </ItemGroup>
+
+</Project>
