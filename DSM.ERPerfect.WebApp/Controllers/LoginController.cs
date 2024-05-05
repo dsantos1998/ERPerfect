@@ -3,11 +3,11 @@ using System.Diagnostics;
 
 namespace DSM.ERPerfect.WebApp.Controllers
 {
-    public class HomeController : BaseController
+    public class LoginController : BaseController
     {
-        private readonly ILogger<HomeController> _logger;
+        private readonly ILogger<LoginController> _logger;
 
-        public HomeController(ILogger<HomeController> logger)
+        public LoginController(ILogger<LoginController> logger)
         {
             _logger = logger;
         }

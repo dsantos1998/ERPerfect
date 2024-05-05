@@ -44,7 +44,7 @@ app.UseSession();   // Habilita TempData[""] y Session[""]
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+    pattern: "{controller=Login}/{action=Index}/{id?}");
 
 // Lenguaje por defecto del proyecto
 app.UseRequestLocalization(new RequestLocalizationOptions
