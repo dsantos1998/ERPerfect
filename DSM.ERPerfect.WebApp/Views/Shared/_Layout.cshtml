@@ -7,11 +7,12 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap-icons.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/loader.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/DSM.ERPerfect.WebApp.styles.css" asp-append-version="true" />
     @await RenderSectionAsync("StyleSheet", required: false)
 </head>
 <body>
-        
+
     @RenderBody()
 
     <footer class="border-top footer text-muted">
@@ -20,7 +21,18 @@
         </div>
     </footer>
 
-    <!-- Main loader - Pendiente -->
+    <!-- Main loader -->
+    <div class="container-loader d-none" id="main-loader">
+        <div class="loader">
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+        <h1>Espere un momento...</h1>
+    </div>
+
 
     <!-- Toast container -->
     <div id="generic-toast-container" class="toast-container position-fixed bottom-0 end-0 p-3">
