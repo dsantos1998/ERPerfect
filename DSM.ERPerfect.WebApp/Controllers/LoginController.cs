@@ -13,6 +13,8 @@ namespace DSM.ERPerfect.WebApp.Controllers
 
         public IActionResult Index()
         {
+            DeleteCookies();
+
             return View();
         }
     }
