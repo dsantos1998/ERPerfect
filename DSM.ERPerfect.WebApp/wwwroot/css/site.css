@@ -18,5 +18,38 @@ html {
 }
 
 body {
-  margin-bottom: 60px;
+    margin-bottom: 60px;
+    font-family: "Poppins", sans-serif;
+    font-weight: 500;
+    font-style: normal;
+    background-image: url("/img/blob-scene-haikei.svg");
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-size: cover;
+}
+
+table.dataTable thead > tr > th.dt-orderable-desc span.dt-column-order:before {
+    content: "\f235" !important;
+    display: inline-block;
+    font-family: bootstrap-icons !important;
+    font-style: normal;
+    font-weight: 400 !important;
+    font-variant: normal;
+    text-transform: none;
+    line-height: 1;
+}
+
+table.dataTable thead > tr > th.dt-orderable-desc span.dt-column-order:after {
+    content: "\f229" !important;
+    display: inline-block;
+    font-family: bootstrap-icons !important;
+    font-style: normal;
+    font-weight: 400 !important;
+    font-variant: normal;
+    text-transform: none;
+    line-height: 1;
+}
+
+.form-floating > .form-control:not(:placeholder-shown) ~ label::after {
+    background-color: inherit;
 }

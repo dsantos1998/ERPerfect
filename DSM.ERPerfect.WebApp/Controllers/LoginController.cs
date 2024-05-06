@@ -1,3 +1,4 @@
+using DSM.ERPerfect.Models.VM;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DSM.ERPerfect.WebApp.Controllers
@@ -17,5 +18,15 @@ namespace DSM.ERPerfect.WebApp.Controllers
 
             return View();
         }
+
+        public IActionResult LogIn(LoginVM login)
+        {
+            // TODO: Check user with database
+            // TODO: Save cookie user information
+
+
+            return RedirectToAction("Index", "Home");
+        }
+
     }
 }
