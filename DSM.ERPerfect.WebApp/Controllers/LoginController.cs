@@ -1,3 +1,5 @@
+using DSM.ERPerfect.Helpers;
+using DSM.ERPerfect.Models.Cookies;
 using DSM.ERPerfect.Models.VM;
 using Microsoft.AspNetCore.Mvc;
 
@@ -22,8 +24,21 @@ namespace DSM.ERPerfect.WebApp.Controllers
         public IActionResult LogIn(LoginVM login)
         {
             // TODO: Check user with database
-            // TODO: Save cookie user information
+            if (resultadoGuardarUsuarioLog.HasErrors)
+            {
+                LoggedErrors(_logger, resultadoGuardarUsuarioLog.Errors);
+                return StatusCode(StatusCodes.Status401Unauthorized, "Credenciales inválidas");
+            }
 
+            // TODO: Save cookie user information
+            CookieUsuario cookieUsuario = new CookieUsuario()
+            {
+                Login = resultUsuario.Content.Nickname,
+                UserGuid = resultUsuario.Content.UserGuid,
+                Nombre = resultUsuario.Content.Nombre,
+                Apellidos = resultUsuario.Content.Apellidos
+            };
+            Response.Cookies.Append(Cookies.USERLOGIN.ToString(), JSONHelper.JsonSerializer(cookieUsuario), new CookieOptions { Expires = DateTime.Now.AddDays(1) });
 
             return RedirectToAction("Index", "Home");
         }
