@@ -7,4 +7,10 @@
         public DateTime FechaAlta { get; set; }
         public DateTime? FechaBaja { get; set; }
     }
+
+    public enum Roles
+    {
+        Administrador,
+        Usuario
+    }
 }
