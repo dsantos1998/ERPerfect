@@ -1,5 +1,7 @@
 ﻿using DSM.ERPerfect.BLL.Interfaces;
 using DSM.ERPerfect.DAL.Interfaces;
+using DSM.ERPerfect.Models.Entities;
+using DSM.ERPerfect.Models.Errors;
 
 namespace DSM.ERPerfect.BLL
 {
@@ -14,6 +16,35 @@ namespace DSM.ERPerfect.BLL
 
         #region Métodos públicos
 
+        public ResultInfo<List<FacturaServicio>> GetFacturasServicios()
+        {
+            return _facturaServicioRepository.GetFacturasServicios();
+        }
+
+        public ResultInfo<List<FacturaServicio>> GetFacturaServicioByIdFactura(int idFactura)
+        {
+            return _facturaServicioRepository.GetFacturaServicioByIdFactura(idFactura);
+        }
+
+        public ResultInfo<List<FacturaServicio>> GetFacturaServicioByIdServicio(int idServicio)
+        {
+            return _facturaServicioRepository.GetFacturaServicioByIdServicio(idServicio);
+        }
+
+        public ResultInfo<FacturaServicio> GetFacturasServiciosById(int id)
+        {
+            return _facturaServicioRepository.GetFacturasServiciosById(id);
+        }
+
+        public ResultInfo<int> NewFacturaServicio(FacturaServicio item)
+        {
+            return _facturaServicioRepository.NewFacturaServicio(item);
+        }
+
+        public ResultInfo<int> DeleteFacturaServicio(FacturaServicio item)
+        {
+            return _facturaServicioRepository.DeleteFacturaServicio(item);
+        }
 
 
         #endregion
