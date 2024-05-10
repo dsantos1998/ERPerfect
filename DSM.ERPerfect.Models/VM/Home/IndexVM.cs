@@ -10,5 +10,6 @@ namespace DSM.ERPerfect.Models.VM.Home
     public class IndexVM
     {
         public CookieUsuario CookieUsuario { get; set; }
+        public Tuple<int, int> PendingBillsStatistic { get; set; }
     }
 }

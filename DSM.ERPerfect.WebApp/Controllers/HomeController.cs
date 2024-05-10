@@ -44,6 +44,9 @@ namespace DSM.ERPerfect.WebApp.Controllers
             }
             result.CookieUsuario = cookieUsuario;
 
+            // TODO: Get pending bills statistic
+            result.PendingBillsStatistic = new Tuple<int, int>(10, 2);
+
             return View(result);
         }
 

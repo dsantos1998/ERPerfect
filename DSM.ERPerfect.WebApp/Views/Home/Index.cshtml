@@ -9,16 +9,15 @@
 
 <div class="container-fluid p-3">
     <div class="row text-center m-2 bg-light rounded-0 shadow">
-        <div class="col-sm-12 col-md-3">
+        <div class="col-sm-12 col-md-2">
             <div class="row">
-                <button class="btn btn-secondary rounded-0 col-3 col-sm-3 col-md-12">Menu 1</button>
-                <button class="btn btn-secondary rounded-0 col-3 col-sm-3 col-md-12">Menu 2</button>
-                <button class="btn btn-secondary rounded-0 col-3 col-sm-3 col-md-12">Menu 3</button>
-                <button class="btn btn-secondary rounded-0 col-3 col-sm-3 col-md-12">Menu 4</button>
+                <button class="btn btn-outline-secondary text-md-start border-0 rounded-0 col-4 col-sm-4 col-md-12">F. Pendientes</button>
+                <button class="btn btn-outline-secondary text-md-start border-0 rounded-0 col-4 col-sm-4 col-md-12">F. Mensual</button>
+                <button class="btn btn-outline-secondary text-md-start border-0 rounded-0 col-4 col-sm-4 col-md-12">Top 5 Servicios</button>
             </div>
         </div>
-        <div class="col-sm-12 col-md-9">
-            1234
+        <div class="col-sm-12 col-md-10" id="chart-container">
+            <partial name="~/Views/Home/Partials/_ChartFacturacionMes.cshtml" for="@Model.PendingBillsStatistic" />
         </div>
     </div>
 </div>
