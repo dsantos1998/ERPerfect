@@ -8,7 +8,7 @@ namespace DSM.ERPerfect.Helpers
         // Generar una clave secreta derivada de una palabra clave
         public static byte[] GenerateDerivedKey(string password)
         {
-            byte[] salt = Encoding.UTF8.GetBytes("EstaEsLaClaveParaTamara");
+            byte[] salt = Encoding.UTF8.GetBytes("EstaEsLaClaveDeERPerfect2024!");
 
             using (var pbkdf2 = new Rfc2898DeriveBytes(password, salt, 10000, HashAlgorithmName.SHA256))
             {

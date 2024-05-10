@@ -3,6 +3,10 @@
 }
 
 
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
+
 <div class="container p-3">
     <div class="row text-center m-5 bg-light rounded shadow">
 
@@ -18,25 +22,29 @@
                 <!-- Formulario -->
                 @using (Html.BeginForm("LogIn", "Login", FormMethod.Post))
                 {
+                    @Html.AntiForgeryToken()
+
                     <!-- Usuario -->
-                    <div class="input-group mb-3">
+                    <div class="input-group mb-3 text-start">
                         <div class="form-floating">
-                            <input type="text" name="username" class="form-control" placeholder="Usuario">
+                            <input type="text" name="username" class="form-control" placeholder="Usuario" data-val="true" data-val-required="Introduce un usuario">
                             <label>
                                 <i class="bi bi-people-fill"></i>
                                 Usuario
                             </label>
+                            <span class="field-validation-valid text-danger mt-2" data-valmsg-for="username" data-valmsg-replace="true"></span>
                         </div>
                     </div>
 
                     <!-- Contraseña -->
-                    <div class="input-group mb-3">
+                    <div class="input-group mb-3 text-start">
                         <div class="form-floating">
-                            <input type="password" name="password" class="form-control" placeholder="Contraseña">
+                            <input type="password" name="password" class="form-control" placeholder="Contraseña" data-val="true" data-val-required="Introduce una contraseña">
                             <label>
                                 <i class="bi bi-key-fill"></i>
                                 Contraseña
                             </label>
+                            <span class="field-validation-valid text-danger mt-2" data-valmsg-for="password" data-valmsg-replace="true"></span>
                         </div>
                     </div>
 

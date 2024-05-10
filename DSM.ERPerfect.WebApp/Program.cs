@@ -2,6 +2,7 @@ using DSM.ERPerfect.BLL;
 using DSM.ERPerfect.BLL.Interfaces;
 using DSM.ERPerfect.DAL;
 using DSM.ERPerfect.DAL.Interfaces;
+using DSM.ERPerfect.WebApp.CORS;
 using Microsoft.AspNetCore.Localization;
 using Serilog;
 
@@ -53,9 +54,18 @@ builder.Services.AddTransient<ITarifaServicioRepository, TarifaServicioRepositor
 builder.Services.AddTransient<IUsuarioBusiness, UsuarioBusiness>();
 builder.Services.AddTransient<IUsuarioRepository, UsuarioRepository>();
 
+builder.Services.AddTransient<IBannedIPBusiness, BannedIPBusiness>();
+builder.Services.AddTransient<IBannedIPRepository, BannedIPRepository>();
+
 #endregion
 
 var app = builder.Build();
+
+// Usar anti-forgery
+app.UseAntiforgery();
+
+// Banned IPs
+app.UseIPDarklist();
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
