@@ -5,19 +5,23 @@
     ViewData["Title"] = "Home";
 }
 
+@section Scripts{
+    <script src="~/js/ajax/home.js" asp-append-version="true"></script>
+}
+
 <partial name="~/Views/Shared/_TopMenu.cshtml" for="@Model.CookieUsuario" />
 
 <div class="container-fluid p-3">
     <div class="row text-center m-2 bg-light rounded-0 shadow">
         <div class="col-sm-12 col-md-2">
             <div class="row">
-                <button class="btn btn-outline-secondary text-md-start border-0 rounded-0 col-4 col-sm-4 col-md-12">F. Pendientes</button>
-                <button class="btn btn-outline-secondary text-md-start border-0 rounded-0 col-4 col-sm-4 col-md-12">F. Mensual</button>
-                <button class="btn btn-outline-secondary text-md-start border-0 rounded-0 col-4 col-sm-4 col-md-12">Top 5 Servicios</button>
+                <a class="btn btn-outline-secondary text-md-start border-0 rounded-0 col-4 col-sm-4 col-md-12" asp-controller="Home" asp-action="Index">F. Pendientes</a>
+                <button class="btn btn-outline-secondary text-md-start border-0 rounded-0 col-4 col-sm-4 col-md-12" onclick="GetPaymentBills()">F. Mensual</button>
+                <button class="btn btn-outline-secondary text-md-start border-0 rounded-0 col-4 col-sm-4 col-md-12" onclick="GetTop5ServicioMes()">Top 5 Servicios</button>
             </div>
         </div>
         <div class="col-sm-12 col-md-10" id="chart-container">
-            <partial name="~/Views/Home/Partials/_ChartFacturacionMes.cshtml" for="@Model.PendingBillsStatistic" />
+            <partial name="~/Views/Home/Partials/_ChartFacturacionPendiente.cshtml" for="@Model.TotalPendingBills" />
         </div>
     </div>
 </div>

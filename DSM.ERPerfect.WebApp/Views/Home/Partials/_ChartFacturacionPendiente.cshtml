@@ -1,0 +1,68 @@
+﻿@model int
+
+<script src="~/lib/chart/chart.min.js" asp-append-version="false"></script>
+
+<div class="p-3">
+    <canvas id="myChart" style="max-height: 50vh;"></canvas>
+</div>
+
+<script>
+    var ctx = document.getElementById('myChart');
+    var myChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: ['Pendientes'],
+            datasets: [{
+                label: 'Cantidad',
+                data: [@Model],
+                // backgroundColor: ['rgb(150, 139, 131, 0.2)', 'rgb(244, 178, 35, 0.2)', 'rgb(102, 201, 186, 0.2)', 'rgb(219, 96, 21, 0.2)'],
+                // borderColor: ['rgb(150, 139, 131, 1.0)', 'rgb(244, 178, 35, 1.0)', 'rgb(102, 201, 186, 1.0)', 'rgb(219, 96, 21, 1.0)'],
+                borderWidth: 2
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            },
+            plugins: {
+                legend: {
+                    position: 'top',
+                    labels: {
+                        font: {
+                            size: 14
+                        }
+                    }
+                },
+                title: {
+                    display: true,
+                    text: 'Facturas pendientes de cobro',
+                    font: {
+                        size: 32
+                    }
+                }
+            }
+        }
+    });
+    // //Obtenemos las estadísticas de alumnos por clase
+    // $.ajax({
+    //     type: "GET",
+    //     url: "/Statistics/GetStatisticsFromClasses",
+    //     data: {},
+    //     dataType: 'json',
+    //     success: function (data) {
+    //         $.each(data[0], function (index, element) {
+    //             myChart.data['labels'].push(element.descripcion)
+    //             myChart.data['datasets'][0].data.push(element.total)
+    //             myChart.update()
+    //         });
+    //     },
+    //     error: function (jqXHR, textStatus, errorThrown) {
+    //         console.log(jqXHR);
+    //         console.log(textStatus);
+    //         console.log(errorThrown);
+    //         alert("Error calling to '/Statistics/GetStatisticsFromClasses'");
+    //     }
+    // });
+</script>

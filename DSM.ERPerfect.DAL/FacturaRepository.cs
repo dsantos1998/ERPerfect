@@ -2,6 +2,7 @@
 using DSM.ERPerfect.Helpers;
 using DSM.ERPerfect.Models.Entities;
 using DSM.ERPerfect.Models.Errors;
+using DSM.ERPerfect.Models.Statistics;
 using Microsoft.Extensions.Configuration;
 
 namespace DSM.ERPerfect.DAL
@@ -145,6 +146,105 @@ namespace DSM.ERPerfect.DAL
             catch (Exception ex)
             {
                 result.Errors.Add(new ResultError(ex.InnerException == null ? ex.Message : ex.InnerException.Message, true, "FacturaRepository.GetFacturasByIdCliente"));
+            }
+
+            return result;
+        }
+
+        public ResultInfo<int> GetPendingBills()
+        {
+            ResultInfo<int> result = new ResultInfo<int>();
+            string procedure = "SP_SEL_GetPendingBills";
+            try
+            {
+                using (SQLHelper repo = new SQLHelper(conString, false))
+                {
+                    var dbres = repo.ExecuteProcedure(procedure);
+
+                    if (!string.IsNullOrEmpty(repo.LastErrorString))
+                    {
+                        result.Errors.Add(new ResultError(repo.LastErrorString, false, "FacturaRepository.GetPendingBills"));
+                    }
+                    else if (dbres == null || dbres.Rows.Count == 0)
+                    {
+                        //result.Errors.Add(new ResultError($"No se ha podido eliminar la factura con el id: {id}", false, "FacturaRepository.DeleteFactura"));
+                    }
+                    else
+                    {
+                        result.Content = Convert.ToInt32(dbres.Rows[0][0]);
+                    }
+                    dbres?.Dispose();
+                }
+            }
+            catch (Exception ex)
+            {
+                result.Errors.Add(new ResultError(ex.InnerException == null ? ex.Message : ex.InnerException.Message, true, "FacturaRepository.GetPendingBills"));
+            }
+
+            return result;
+        }
+
+        public ResultInfo<List<PaymentBills>> GetPaymentBills()
+        {
+            ResultInfo<List<PaymentBills>> result = new ResultInfo<List<PaymentBills>>();
+            string procedure = "SP_QUERY_GetPaymentBills";
+            try
+            {
+                using (SQLHelper repo = new SQLHelper(conString, false))
+                {
+                    var dbres = repo.ExecuteProcedure(procedure);
+
+                    if (!string.IsNullOrEmpty(repo.LastErrorString))
+                    {
+                        result.Errors.Add(new ResultError(repo.LastErrorString, false, "FacturaRepository.GetPaymentBills"));
+                    }
+                    else if (dbres == null || dbres.Rows.Count == 0)
+                    {
+                        //result.Errors.Add(new ResultError($"No se ha podido eliminar la factura con el id: {id}", false, "FacturaRepository.GetPaymentBills"));
+                    }
+                    else
+                    {
+                        result.Content = DataRowHelper<PaymentBills>.Get(dbres);
+                    }
+                    dbres?.Dispose();
+                }
+            }
+            catch (Exception ex)
+            {
+                result.Errors.Add(new ResultError(ex.InnerException == null ? ex.Message : ex.InnerException.Message, true, "FacturaRepository.GetPaymentBills"));
+            }
+
+            return result;
+        }
+
+        public ResultInfo<List<Top5Servicios>> GetTop5ServicioMes()
+        {
+            ResultInfo<List<Top5Servicios>> result = new ResultInfo<List<Top5Servicios>>();
+            string procedure = "SP_QUERY_GetTop5ServicioMes";
+            try
+            {
+                using (SQLHelper repo = new SQLHelper(conString, false))
+                {
+                    var dbres = repo.ExecuteProcedure(procedure);
+
+                    if (!string.IsNullOrEmpty(repo.LastErrorString))
+                    {
+                        result.Errors.Add(new ResultError(repo.LastErrorString, false, "FacturaRepository.GetTop5ServicioMes"));
+                    }
+                    else if (dbres == null || dbres.Rows.Count == 0)
+                    {
+                        //result.Errors.Add(new ResultError($"No se ha podido eliminar la factura con el id: {id}", false, "FacturaRepository.GetTop5ServicioMes"));
+                    }
+                    else
+                    {
+                        result.Content = DataRowHelper<Top5Servicios>.Get(dbres);
+                    }
+                    dbres?.Dispose();
+                }
+            }
+            catch (Exception ex)
+            {
+                result.Errors.Add(new ResultError(ex.InnerException == null ? ex.Message : ex.InnerException.Message, true, "FacturaRepository.GetTop5ServicioMes"));
             }
 
             return result;

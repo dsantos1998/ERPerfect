@@ -1,0 +1,93 @@
+﻿@using DSM.ERPerfect.Models.Statistics
+@model List<PaymentBills>
+
+<script src="~/lib/chart/chart.min.js" asp-append-version="false"></script>
+
+<div class="p-3">
+    <canvas id="myChart" style="max-height: 50vh;"></canvas>
+</div>
+
+<script>
+    var ctx = document.getElementById('myChart');
+    var myChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: [
+
+                @if(Model != null)
+                {
+                    @if(Model.Count > 0)
+                    {
+                        @foreach(var item in Model)
+                        {
+                            @:'@item.MesDescripcion',   
+                        }
+                    }
+                }
+
+            ],
+            datasets: [{
+                label: 'Total',
+                data: [
+                    @if (Model != null)
+                    {
+                        @if (Model.Count > 0)
+                        {
+                            @foreach (var item in Model)
+                            {
+                                @:@item.Total,
+                            }
+                        }
+                    }
+                ],
+                backgroundColor: ['rgb(255, 99, 132)','rgb(54, 162, 235)','rgb(255, 205, 86)'],
+                // borderColor: ['rgb(150, 139, 131, 1.0)', 'rgb(244, 178, 35, 1.0)', 'rgb(102, 201, 186, 1.0)', 'rgb(219, 96, 21, 1.0)'],
+                borderWidth: 2
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            },
+            plugins: {
+                legend: {
+                    position: 'top',
+                    labels: {
+                        font: {
+                            size: 14
+                        }
+                    }
+                },
+                title: {
+                    display: true,
+                    text: 'Facturación último año',
+                    font: {
+                        size: 32
+                    }
+                }
+            }
+        }
+    });
+    // //Obtenemos las estadísticas de alumnos por clase
+    // $.ajax({
+    //     type: "GET",
+    //     url: "/Statistics/GetStatisticsFromClasses",
+    //     data: {},
+    //     dataType: 'json',
+    //     success: function (data) {
+    //         $.each(data[0], function (index, element) {
+    //             myChart.data['labels'].push(element.descripcion)
+    //             myChart.data['datasets'][0].data.push(element.total)
+    //             myChart.update()
+    //         });
+    //     },
+    //     error: function (jqXHR, textStatus, errorThrown) {
+    //         console.log(jqXHR);
+    //         console.log(textStatus);
+    //         console.log(errorThrown);
+    //         alert("Error calling to '/Statistics/GetStatisticsFromClasses'");
+    //     }
+    // });
+</script>

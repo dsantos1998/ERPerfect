@@ -3,6 +3,7 @@ using DSM.ERPerfect.Helpers;
 using DSM.ERPerfect.Models.Cookies;
 using DSM.ERPerfect.Models.Entities;
 using DSM.ERPerfect.Models.Errors;
+using DSM.ERPerfect.Models.Statistics;
 using DSM.ERPerfect.Models.VM.Home;
 using Microsoft.AspNetCore.Mvc;
 
@@ -14,16 +15,19 @@ namespace DSM.ERPerfect.WebApp.Controllers
 
         private readonly ILogger<HomeController> _logger;
         private IUsuarioBusiness _usuarioBusiness { get; init; }
+        private IFacturaBusiness _facturaBusiness { get; init; }
 
         #endregion
 
         #region Constructor
 
         public HomeController(ILogger<HomeController> logger
-            , IUsuarioBusiness usuarioBusiness)
+            , IUsuarioBusiness usuarioBusiness
+            , IFacturaBusiness facturaBusiness)
         {
             _logger = logger;
             _usuarioBusiness = usuarioBusiness;
+            _facturaBusiness = facturaBusiness;
         }
 
         #endregion
@@ -44,8 +48,14 @@ namespace DSM.ERPerfect.WebApp.Controllers
             }
             result.CookieUsuario = cookieUsuario;
 
-            // TODO: Get pending bills statistic
-            result.PendingBillsStatistic = new Tuple<int, int>(10, 2);
+            // Get pending bills statistic
+            ResultInfo<int> resultPendingBills = _facturaBusiness.GetPendingBills();
+            if (resultPendingBills.HasErrors)
+            {
+                LoggedErrors(_logger, resultPendingBills.Errors);
+                return SendErrorsToView(resultPendingBills.Errors);
+            }
+            result.TotalPendingBills = resultPendingBills.Content;
 
             return View(result);
         }
@@ -54,7 +64,45 @@ namespace DSM.ERPerfect.WebApp.Controllers
 
         #region HTML Calls
 
+        public IActionResult GetPaymentBills()
+        {
+            // Check cookie user
+            CookieUsuario? cookieUsuario = CheckLoginCookie();
+            if (cookieUsuario == null)
+            {
+                return RedirectToAction("Index", "Login");
+            }
 
+            // Get completed bills
+            ResultInfo<List<PaymentBills>> resultCompleteBills = _facturaBusiness.GetPaymentBills();
+            if (resultCompleteBills.HasErrors)
+            {
+                LoggedErrors(_logger, resultCompleteBills.Errors);
+                return SendErrorsToView(resultCompleteBills.Errors);
+            }
+
+            return PartialView("~/Views/Home/Partials/_ChartFacturacionCompletaAnual.cshtml", resultCompleteBills.Content);
+        }
+
+        public IActionResult GetTop5ServicioMes()
+        {
+            // Check cookie user
+            CookieUsuario? cookieUsuario = CheckLoginCookie();
+            if (cookieUsuario == null)
+            {
+                return RedirectToAction("Index", "Login");
+            }
+
+            // Get completed bills
+            ResultInfo<List<Top5Servicios>> resultTop5Servicios = _facturaBusiness.GetTop5ServicioMes();
+            if (resultTop5Servicios.HasErrors)
+            {
+                LoggedErrors(_logger, resultTop5Servicios.Errors);
+                return SendErrorsToView(resultTop5Servicios.Errors);
+            }
+
+            return PartialView("~/Views/Home/Partials/_ChartTop5Servicios.cshtml", resultTop5Servicios.Content);
+        }
 
         #endregion
 
