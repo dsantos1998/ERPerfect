@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DSM.ERPerfect.Models.VM
+namespace DSM.ERPerfect.Models.VM.Login
 {
     public class LoginVM
     {

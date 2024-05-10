@@ -1,11 +1,24 @@
-﻿@{
+﻿@using DSM.ERPerfect.Models.VM.Home
+@model IndexVM
+
+@{
     ViewData["Title"] = "Home";
 }
 
-<div class="container p-3">
-    <div class="row text-center m-5 bg-light rounded shadow">
-        <div class="col-12">
-            <h1 class="display-4">Home</h1>
+<partial name="~/Views/Shared/_TopMenu.cshtml" for="@Model.CookieUsuario" />
+
+<div class="container-fluid p-3">
+    <div class="row text-center m-2 bg-light rounded-0 shadow">
+        <div class="col-sm-12 col-md-3">
+            <div class="row">
+                <button class="btn btn-secondary rounded-0 col-3 col-sm-3 col-md-12">Menu 1</button>
+                <button class="btn btn-secondary rounded-0 col-3 col-sm-3 col-md-12">Menu 2</button>
+                <button class="btn btn-secondary rounded-0 col-3 col-sm-3 col-md-12">Menu 3</button>
+                <button class="btn btn-secondary rounded-0 col-3 col-sm-3 col-md-12">Menu 4</button>
+            </div>
+        </div>
+        <div class="col-sm-12 col-md-9">
+            1234
         </div>
     </div>
 </div>

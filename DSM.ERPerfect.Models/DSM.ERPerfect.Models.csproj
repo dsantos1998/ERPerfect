@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <Folder Include="Queries\" />
+    <Folder Include="VM\BackOffice\" />
   </ItemGroup>
 
 </Project>

@@ -1,9 +1,12 @@
-﻿<header id="navbar-menu">
+﻿@using DSM.ERPerfect.Models.Cookies
+@using DSM.ERPerfect.Models.Entities
+@model CookieUsuario
+
+<header>
     <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
         <div class="container-fluid">
             <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">ERPerfect</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                    aria-expanded="false" aria-label="Toggle navigation">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
@@ -11,7 +14,32 @@
                     <li class="nav-item">
                         <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Clientes">Clientes</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Clientes">Facturación</a>
+                    </li>
+                    @if(Model != null)
+                    {
+                        if(Model.Rol.Trim().ToLower() == Roles.Administrador.ToString().ToLower())
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="BackOffice" asp-action="Index">Administración</a>
+                            </li>
+                        }
+                    }
+                    <li class="d-sm-none d-block nav-item">
+                        <a class="nav-link text-dark" asp-area="" asp-controller="Login" asp-action="Index">Cerrar sesión</a>
+                    </li>
                 </ul>
+            </div>
+            <div class="d-none d-sm-inline-flex justify-content-end align-items-center">
+                @if(Model != null)
+                {
+                    <span>@Model.Login</span>
+                }
+                <a asp-controller="Login" asp-action="Index" class="btn btn-secondary rounded-0 ms-2"><i class="bi bi-door-open-fill"></i></a>
             </div>
         </div>
     </nav>

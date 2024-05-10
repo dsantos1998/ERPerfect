@@ -3,7 +3,7 @@ using DSM.ERPerfect.Helpers;
 using DSM.ERPerfect.Models.Cookies;
 using DSM.ERPerfect.Models.Entities;
 using DSM.ERPerfect.Models.Errors;
-using DSM.ERPerfect.Models.VM;
+using DSM.ERPerfect.Models.VM.Login;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
@@ -101,6 +101,7 @@ namespace DSM.ERPerfect.WebApp.Controllers
                 // Reset tries
                 resultUsuario.Content.Intentos = 0;
                 resultUsuario.Content.FechaUltimoLogin = DateTime.Now;
+                resultUsuario.Content.FechaBloqueo = null;
                 ResultInfo<int> resultLimitLogin = _usuariosBusiness.UpdateUsuario(resultUsuario.Content);
                 if (resultLimitLogin.HasErrors)
                 {
