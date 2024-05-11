@@ -1,20 +1,21 @@
 html {
-  font-size: 14px;
+    font-size: 14px;
 }
 
 @media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
+    html {
+        font-size: 16px;
+    }
 }
 
 .btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+    /*box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;*/
+    box-shadow: inherit;
 }
 
 html {
-  position: relative;
-  min-height: 100%;
+    position: relative;
+    min-height: 100%;
 }
 
 body {
@@ -52,4 +53,14 @@ table.dataTable thead > tr > th.dt-orderable-desc span.dt-column-order:after {
 
 .form-floating > .form-control:not(:placeholder-shown) ~ label::after {
     background-color: inherit;
+}
+
+.dt-search {
+    display: flex;
+    align-items: center;
+}
+
+.dt-length {
+    display: flex;
+    align-items: center;
 }

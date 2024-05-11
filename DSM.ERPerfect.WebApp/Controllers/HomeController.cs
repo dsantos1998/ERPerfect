@@ -60,6 +60,21 @@ namespace DSM.ERPerfect.WebApp.Controllers
             return View(result);
         }
 
+        public IActionResult Clients()
+        {
+            ClientsVM result = new ClientsVM();
+
+            // Check cookie user
+            CookieUsuario? cookieUsuario = CheckLoginCookie();
+            if (cookieUsuario == null)
+            {
+                return RedirectToAction("Index", "Login");
+            }
+            result.CookieUsuario = cookieUsuario;
+
+            return View(result);
+        }
+
         #endregion
 
         #region HTML Calls

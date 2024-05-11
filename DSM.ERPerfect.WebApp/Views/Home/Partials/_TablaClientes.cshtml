@@ -1,0 +1,86 @@
+﻿@using DSM.ERPerfect.Models.Entities
+@model List<Cliente>
+
+@section StyleSheet {
+    <link rel="stylesheet" href="~/lib/datatables/css/datatables.min.css" />
+}
+
+<div class="table-responsive">
+    <table id="client-table" class="table tabñe-striped table-hover table-bordered" style="width: 100%;">
+        <thead class="text-center">
+            <tr>
+                <th class="bg-primary text-light border-0">Nombre</th>
+                <th class="bg-primary text-light border-0">Apellidos</th>
+                <th class="bg-primary text-light border-0">Teléfono</th>
+                <th class="bg-primary text-light border-0">Email</th>
+                <th class="bg-primary text-light border-0">DNI</th>
+                <th class="bg-primary text-light border-0">Alta</th>
+                <th class="bg-primary text-light border-0">Baja</th>
+                <th class="bg-primary text-light border-0"></th>
+            </tr>
+        </thead>
+        <tbody class="text-start">
+            @if(Model != null)
+            {
+                if(Model.Count > 0)
+                {
+                    foreach(var item in Model)
+                    {
+                        <tr>
+                            <td>@item.Nombre</td>
+                            <td>@item.Apellidos</td>
+                            <td>@item.Telefono</td>
+                            <td>@item.Email</td>
+                            <td>@item.DNI</td>
+                            <td>
+                                <span class="d-none">@item.FechaAlta.ToString("yyyy/MM/dd HH:mm:ss")</span>
+                                @item.FechaAlta.ToString("dd/MM/yyyy HH:mm:ss")
+                            </td>
+                            <td>
+                                <span class="d-none">@item.FechaBaja.ToString("yyyy/MM/dd HH:mm:ss")</span>
+                                @item.FechaBaja.ToString("dd/MM/yyyy HH:mm:ss")
+                            </td>
+                            <td>
+                                <button class="btn btn-warning" data-bs-toggle="tooltip" data-bs-title="Editar"><i class="bi bi-pencil-fill"></i></button>
+                            </td>
+                        </tr>
+                    }
+                }
+            }
+            <tr>
+                <td>item.Nombre</td>
+                <td>item.Apellidos</td>
+                <td>item.Telefono</td>
+                <td>item.Email</td>
+                <td>item.DNI</td>
+                <td>
+                    item.FechaAlta.ToString("dd/MM/yyyy HH:mm:ss")
+                </td>
+                <td>
+                    item.FechaBaja.ToString("dd/MM/yyyy HH:mm:ss")
+                </td>
+                <td>
+                    <button class="btn btn-outline-warning" data-bs-toggle="tooltip" data-bs-title="Editar"><i class="bi bi-pencil-fill"></i></button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<script src="~/lib/popper/js/popper.min.js"></script>
+
+<script>
+    const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+    const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
+</script>
+
+<script>
+    try {
+        LoadDatatableFramework('#client-table');
+    }
+    catch(error) {
+        window.addEventListener('DOMContentLoaded', () => {        
+            LoadDatatableFramework('#client-table');
+        });
+    }
+</script>

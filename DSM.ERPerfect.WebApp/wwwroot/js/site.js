@@ -81,6 +81,11 @@ function LoadToastErrors(errors) {
 
 function LoadDatatableFramework(tableId) {
 
-    new DataTable(tableId);
+    new DataTable(tableId, {
+        language: {
+            url: '../lib/datatables/js/languages/datatable-spanish-labels.json'
+        },
+        pagingType: 'simple_numbers'
+    });
 
 }

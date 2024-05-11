@@ -10,8 +10,15 @@
     <link rel="stylesheet" href="~/css/loader.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/DSM.ERPerfect.WebApp.styles.css" asp-append-version="true" />
     @await RenderSectionAsync("StyleSheet", required: false)
+    <!-- JS Frameworks -->
 </head>
 <body>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/lib/datatables/js/datatables.min.js" asp-append-version="false"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
 
     @RenderBody()
 
@@ -38,11 +45,6 @@
     <div id="generic-toast-container" class="toast-container position-fixed bottom-0 end-0 p-3">
     </div>
 
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.min.js"></script>
-    @* <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script> *@
-    <script src="~/js/site.js" asp-append-version="true"></script>
-    @await RenderSectionAsync("Scripts", required: false)
 
 </body>
 </html>
