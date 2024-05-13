@@ -2,6 +2,7 @@
 using DSM.ERPerfect.Helpers;
 using DSM.ERPerfect.Models.Entities;
 using DSM.ERPerfect.Models.Errors;
+using DSM.ERPerfect.Models.Queries;
 using Microsoft.Extensions.Configuration;
 
 namespace DSM.ERPerfect.DAL
@@ -18,9 +19,9 @@ namespace DSM.ERPerfect.DAL
 
         #region QUERY's
 
-        public ResultInfo<List<TarifaServicio>> GetTarifaServicio()
+        public ResultInfo<List<TarifaServicioQuery>> GetTarifaServicio()
         {
-            ResultInfo<List<TarifaServicio>> result = new ResultInfo<List<TarifaServicio>>();
+            ResultInfo<List<TarifaServicioQuery>> result = new ResultInfo<List<TarifaServicioQuery>>();
             string procedure = "SP_QUERY_GetTarifaServicio";
             try
             {
@@ -38,7 +39,7 @@ namespace DSM.ERPerfect.DAL
                     }
                     else
                     {
-                        result.Content = DataRowHelper<TarifaServicio>.Get(dbres);
+                        result.Content = DataRowHelper<TarifaServicioQuery>.Get(dbres);
                     }
                     dbres?.Dispose();
                 }
@@ -51,9 +52,9 @@ namespace DSM.ERPerfect.DAL
             return result;
         }
 
-        public ResultInfo<TarifaServicio> GetTarifaServicioById(int id)
+        public ResultInfo<TarifaServicioQuery> GetTarifaServicioById(int id)
         {
-            ResultInfo<TarifaServicio> result = new ResultInfo<TarifaServicio>();
+            ResultInfo<TarifaServicioQuery> result = new ResultInfo<TarifaServicioQuery>();
             string procedure = "SP_SEL_GetTarifaServicioById";
             try
             {
@@ -71,7 +72,7 @@ namespace DSM.ERPerfect.DAL
                     }
                     else
                     {
-                        result.Content = DataRowHelper<TarifaServicio>.Get(dbres.Rows[0]);
+                        result.Content = DataRowHelper<TarifaServicioQuery>.Get(dbres.Rows[0]);
                     }
                     dbres?.Dispose();
                 }
@@ -84,9 +85,9 @@ namespace DSM.ERPerfect.DAL
             return result;
         }
 
-        public ResultInfo<List<TarifaServicio>> GetTarifaServicioByIdTarifa(int id)
+        public ResultInfo<List<TarifaServicioQuery>> GetTarifaServicioByIdTarifa(int id)
         {
-            ResultInfo<List<TarifaServicio>> result = new ResultInfo<List<TarifaServicio>>();
+            ResultInfo<List<TarifaServicioQuery>> result = new ResultInfo<List<TarifaServicioQuery>>();
             string procedure = "SP_QUERY_GetTarifaServicioByIdTarifa";
             try
             {
@@ -104,7 +105,7 @@ namespace DSM.ERPerfect.DAL
                     }
                     else
                     {
-                        result.Content = DataRowHelper<TarifaServicio>.Get(dbres);
+                        result.Content = DataRowHelper<TarifaServicioQuery>.Get(dbres);
                     }
                     dbres?.Dispose();
                 }
@@ -117,9 +118,9 @@ namespace DSM.ERPerfect.DAL
             return result;
         }
 
-        public ResultInfo<List<TarifaServicio>> GetTarifaServicioByIdServicio(int id)
+        public ResultInfo<List<TarifaServicioQuery>> GetTarifaServicioByIdServicio(int id)
         {
-            ResultInfo<List<TarifaServicio>> result = new ResultInfo<List<TarifaServicio>>();
+            ResultInfo<List<TarifaServicioQuery>> result = new ResultInfo<List<TarifaServicioQuery>>();
             string procedure = "SP_QUERY_GetTarifaServicioByIdServicio";
             try
             {
@@ -137,7 +138,7 @@ namespace DSM.ERPerfect.DAL
                     }
                     else
                     {
-                        result.Content = DataRowHelper<TarifaServicio>.Get(dbres);
+                        result.Content = DataRowHelper<TarifaServicioQuery>.Get(dbres);
                     }
                     dbres?.Dispose();
                 }

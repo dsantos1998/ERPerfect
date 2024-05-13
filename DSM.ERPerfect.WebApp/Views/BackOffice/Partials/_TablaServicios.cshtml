@@ -1,0 +1,208 @@
+﻿@using DSM.ERPerfect.Models.VM.BackOffice
+@model ServicioVM
+
+@section StyleSheet {
+    <link rel="stylesheet" href="~/lib/datatables/css/datatables.min.css" />
+}
+
+<div class="row">
+    <div class="col-12 my-2 mt-3">
+        <h3>Servicios</h3>
+    </div>
+    <div class="col-12 my-2 text-end">
+        <button class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#modal-add-servicio"><i class="bi bi-plus-square me-2"></i>Añadir</button>
+        @if (Model.Active)
+        {
+            <button class="btn btn-outline-secondary" onclick="LoadServicios(false)"><i class="bi bi-arrow-down me-2"></i>Desactivadas</button>
+        }
+        else
+        {
+            <button class="btn btn-outline-secondary" onclick="LoadServicios(true)"><i class="bi bi-arrow-up me-2"></i>Activadas</button>
+        }
+    </div>
+    <div class="col-12">
+        <div class="table-responsive">
+            <table id="servicio-table" class="table table-striped table-hover table-bordered" style="width: 100%;">
+                <thead class="text-center">
+                    <tr>
+                        <th class="bg-primary text-light border-0">Descripcion</th>
+                        @if (Model.Active)
+                        {
+                            <th class="bg-primary text-light border-0">Alta</th>
+                        }
+                        else
+                        {
+                            <th class="bg-primary text-light border-0">Baja</th>
+                        }
+                        <th class="bg-primary text-light border-0 col-1"></th>
+                    </tr>
+                </thead>
+                <tbody class="text-start">
+                    @if (Model.Servicios != null)
+                    {
+                        if (Model.Servicios.Count > 0)
+                        {
+                            foreach (var item in Model.Servicios)
+                            {
+                                <tr class="align-middle">
+                                    <td>@item.ServicioDescripcion</td>
+                                    @if (Model.Active)
+                                    {
+                                        <td>
+                                            <span class="d-none">@item.FechaAlta.ToString("yyyy/MM/dd HH:mm:ss")</span>
+                                            @item.FechaAlta.ToString("dd/MM/yyyy HH:mm:ss")
+                                        </td>
+                                    }
+                                    else
+                                    {
+                                        <td>
+                                            @if (item.FechaBaja != null)
+                                            {
+                                                <span class="d-none">@item.FechaBaja.Value.ToString("yyyy/MM/dd HH:mm:ss")</span>
+                                                @item.FechaBaja.Value.ToString("dd/MM/yyyy HH:mm:ss")
+                                            }
+                                        </td>
+                                    }
+                                    <td class="d-flex justify-content-end">
+                                        <button class="btn btn-warning me-2" data-bs-toggle="tooltip" data-bs-title="Editar" onclick="ShowEditarServicio(@item.IdServicio, @item.IdTarifa)"><i class="bi bi-pencil-fill"></i></button>
+                                        @if (Model.Active)
+                                        {
+                                            <button class="btn btn-danger" data-bs-toggle="tooltip" data-bs-title="Desactivar" onclick="ShowDisabledServicio(@item.IdServicio, @item.IdTarifa)"><i class="bi bi-arrow-down"></i></button>
+                                        }
+                                        else
+                                        {
+                                            <button class="btn btn-secondary" data-bs-toggle="tooltip" data-bs-title="Activar" onclick="ShowEnabledServicio(@item.IdServicio, @item.IdTarifa)"><i class="bi bi-arrow-up"></i></button>
+                                        }
+                                        
+                                    </td>
+                                </tr>
+                            }
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <script src="~/lib/popper/js/popper.min.js"></script>
+
+        <script>
+            var tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+            var tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
+        </script>
+
+        <script>
+            try {
+                LoadDatatableFramework('#servicio-table');
+            }
+            catch (error) {
+                window.addEventListener('DOMContentLoaded', () => {
+                    LoadDatatableFramework('#servicio-table');
+                });
+            }
+        </script>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="modal-add-servicio" tabindex="-1" aria-labelledby="modal-add-servicio-label" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="modal-add-servicio-label">Añadir servicio</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" id="modal-add-servicio-close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="form-floating mb-3">
+                    <input type="text" class="form-control" id="modal-add-servicio-descripcion" placeholder="Corte pelo...">
+                    <label for="modal-add-servicio-descripcion">Descripción</label>
+                </div>
+                <div class="form-floating">
+                    <select class="form-select" id="modal-add-servicio-tarifa" aria-label="Floating label select example">
+                        <option selected>--SELECCIONE UNA TARIFA--</option>
+                        @if(Model.Tarifas != null)
+                        {
+                            if(Model.Tarifas.Count > 0)
+                            {
+                                foreach (var item in Model.Tarifas.Where(x => x.FechaBaja >= DateTime.Now || x.FechaBaja == null))
+                                {
+                                    <option value="@item.IdTarifa">@item.Descripcion - @item.Precio€</option>
+                                }
+                            }
+                        }
+                    </select>
+                    <label for="modal-add-servicio-tarifa">Tarifa</label>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                <button type="button" class="btn btn-success" onclick="SaveServicio()"><i class="bi bi-plus-square me-2"></i>Añadir</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="modal-edit-servicio" tabindex="-1" aria-labelledby="modal-edit-servicio-label" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="modal-edit-servicio-label">Editar servicio</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" id="modal-edit-servicio-close"></button>
+            </div>
+            <div class="modal-body" id="modal-edit-servicio-body">
+                
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                <button type="button" class="btn btn-warning" onclick="EditarServicio()"><i class="bi bi-pencil-fill me-2"></i>Editar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@if (Model.Active)
+{
+    <!-- Modal -->
+    <div class="modal fade" id="modal-disabled-servicio" tabindex="-1" aria-labelledby="modal-disabled-servicio-label" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="modal-disabled-servicio-label">Desactivar servicio</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" id="modal-disabled-servicio-close"></button>
+                </div>
+                <div class="modal-body text-start" id="modal-disabled-servicio-body">
+                    <input type="hidden" id="modal-disabled-servicio-idservicio" />
+                    <input type="hidden" id="modal-disabled-servicio-idtarifa" />
+                    <p>La servicio se desactivará, ¿Seguro que quiere continuar?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                    <button type="button" class="btn btn-danger" onclick="DisabledServicio()"><i class="bi bi-trash-fill me-2"></i>Desactivar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+else
+{
+    <!-- Modal -->
+    <div class="modal fade" id="modal-enabled-servicio" tabindex="-1" aria-labelledby="modal-enabled-servicio-label" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="modal-enabled-servicio-label">Activar servicio</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" id="modal-enabled-servicio-close"></button>
+                </div>
+                <div class="modal-body text-start" id="modal-enabled-servicio-body">
+                    <input type="hidden" id="modal-enabled-servicio-idservicio" />
+                    <input type="hidden" id="modal-enabled-servicio-idtarifa" />
+                    <p>La servicio se activará, ¿Seguro que quiere continuar?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                    <button type="button" class="btn btn-success" onclick="EnabledServicio()"><i class="bi bi-check-lg me-2"></i>Activar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}

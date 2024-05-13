@@ -1,0 +1,40 @@
+﻿@using DSM.ERPerfect.Models.VM.BackOffice
+@model ServicioVM
+
+@{
+    int idTarifaServicio = Model.TarifaServicio != null ? Model.TarifaServicio.IdTarifaServicio : 0;
+    int idServicio = Model.TarifaServicio != null ? Model.TarifaServicio.IdServicio : 0;
+    int idTarifa = Model.TarifaServicio != null ? Model.TarifaServicio.IdTarifa : 0;
+    string servicioDescripcion = Model.TarifaServicio != null ? Model.TarifaServicio.ServicioDescripcion : "";
+}
+
+@if(Model != null)
+{
+    <input type="hidden" id="modal-edit-servicio-id" value="@idTarifaServicio">
+    <input type="hidden" id="modal-edit-servicio-idservicio" value="@idServicio">
+    <div class="form-floating mb-3">
+        <input type="text" class="form-control" id="modal-edit-servicio-descripcion" placeholder="Corte pelo..." value="@servicioDescripcion">
+        <label for="modal-edit-servicio-descripcion">Descripción</label>
+    </div>
+    <div class="form-floating">
+        <select class="form-select" id="modal-edit-servicio-tarifa" aria-label="Floating label select example">
+            @if (Model.Tarifas != null)
+            {
+                if (Model.Tarifas.Count > 0)
+                {
+                    foreach (var item in Model.Tarifas.Where(x => x.IdTarifa == idTarifa))
+                    {
+                        <option value="@item.IdTarifa" selected>@item.Descripcion - @item.Precio€</option>
+                        break;
+                    }
+
+                    foreach (var item in Model.Tarifas.Where(x => (x.FechaBaja >= DateTime.Now || x.FechaBaja == null) && x.IdTarifa != idTarifa))
+                    {
+                        <option value="@item.IdTarifa">@item.Descripcion - @item.Precio€</option>   
+                    }
+                }
+            }
+        </select>
+        <label for="modal-add-servicio-tarifa">Tarifa</label>
+    </div>
+}

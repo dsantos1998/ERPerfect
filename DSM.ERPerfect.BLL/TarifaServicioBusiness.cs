@@ -2,6 +2,7 @@
 using DSM.ERPerfect.DAL.Interfaces;
 using DSM.ERPerfect.Models.Entities;
 using DSM.ERPerfect.Models.Errors;
+using DSM.ERPerfect.Models.Queries;
 
 namespace DSM.ERPerfect.BLL
 {
@@ -16,22 +17,22 @@ namespace DSM.ERPerfect.BLL
 
         #region Métodos públicos
 
-        public ResultInfo<List<TarifaServicio>> GetTarifaServicio()
+        public ResultInfo<List<TarifaServicioQuery>> GetTarifaServicio()
         {
             return _tarifaServicioRepository.GetTarifaServicio();
         }
 
-        public ResultInfo<TarifaServicio> GetTarifaServicioById(int id)
+        public ResultInfo<TarifaServicioQuery> GetTarifaServicioById(int id)
         {
             return _tarifaServicioRepository.GetTarifaServicioById(id);
         }
 
-        public ResultInfo<List<TarifaServicio>> GetTarifaServicioByIdTarifa(int id)
+        public ResultInfo<List<TarifaServicioQuery>> GetTarifaServicioByIdTarifa(int id)
         {
             return _tarifaServicioRepository.GetTarifaServicioByIdTarifa(id);
         }
 
-        public ResultInfo<List<TarifaServicio>> GetTarifaServicioByIdServicio(int id)
+        public ResultInfo<List<TarifaServicioQuery>> GetTarifaServicioByIdServicio(int id)
         {
             return _tarifaServicioRepository.GetTarifaServicioByIdServicio(id);
         }
