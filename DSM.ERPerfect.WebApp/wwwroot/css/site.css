@@ -30,7 +30,8 @@ body {
 }
 
 table.dataTable thead > tr > th.dt-orderable-desc span.dt-column-order:before {
-    content: "\f235" !important;
+    /*content: "\f235" !important;*/
+    content: "" !important;
     display: inline-block;
     font-family: bootstrap-icons !important;
     font-style: normal;
@@ -41,7 +42,8 @@ table.dataTable thead > tr > th.dt-orderable-desc span.dt-column-order:before {
 }
 
 table.dataTable thead > tr > th.dt-orderable-desc span.dt-column-order:after {
-    content: "\f229" !important;
+    /*content: "\f229" !important;*/
+    content: "" !important;
     display: inline-block;
     font-family: bootstrap-icons !important;
     font-style: normal;
@@ -63,4 +65,12 @@ table.dataTable thead > tr > th.dt-orderable-desc span.dt-column-order:after {
 .dt-length {
     display: flex;
     align-items: center;
+}
+
+.dt-length label{
+    margin-left: 4px;
+}
+
+.dt-search label{
+    margin-right: 4px;
 }

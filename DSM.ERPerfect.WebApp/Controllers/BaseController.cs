@@ -15,7 +15,7 @@ namespace DSM.ERPerfect.WebApp.Controllers
         {
             foreach (ResultError error in errors)
             {
-                if (!error.IsException)
+                if (error.IsException == false)
                     logger.LogWarning($"Warning: '{JSONHelper.JsonSerializer(errors)}'");
                 else
                     logger.LogError($"Error: '{JSONHelper.JsonSerializer(errors)}'");

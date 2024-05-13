@@ -6,7 +6,7 @@
 }
 
 <div class="table-responsive">
-    <table id="client-table" class="table tabñe-striped table-hover table-bordered" style="width: 100%;">
+    <table id="client-table" class="table table-striped table-hover table-bordered" style="width: 100%;">
         <thead class="text-center">
             <tr>
                 <th class="bg-primary text-light border-0">Nombre</th>
@@ -16,7 +16,7 @@
                 <th class="bg-primary text-light border-0">DNI</th>
                 <th class="bg-primary text-light border-0">Alta</th>
                 <th class="bg-primary text-light border-0">Baja</th>
-                <th class="bg-primary text-light border-0"></th>
+                <th class="bg-primary text-light border-0 col-1"></th>
             </tr>
         </thead>
         <tbody class="text-start">
@@ -26,7 +26,7 @@
                 {
                     foreach(var item in Model)
                     {
-                        <tr>
+                        <tr class="align-middle">
                             <td>@item.Nombre</td>
                             <td>@item.Apellidos</td>
                             <td>@item.Telefono</td>
@@ -40,29 +40,13 @@
                                 <span class="d-none">@item.FechaBaja.ToString("yyyy/MM/dd HH:mm:ss")</span>
                                 @item.FechaBaja.ToString("dd/MM/yyyy HH:mm:ss")
                             </td>
-                            <td>
+                            <td class="d-flex justify-content-end">
                                 <button class="btn btn-warning" data-bs-toggle="tooltip" data-bs-title="Editar"><i class="bi bi-pencil-fill"></i></button>
                             </td>
                         </tr>
                     }
                 }
             }
-            <tr>
-                <td>item.Nombre</td>
-                <td>item.Apellidos</td>
-                <td>item.Telefono</td>
-                <td>item.Email</td>
-                <td>item.DNI</td>
-                <td>
-                    item.FechaAlta.ToString("dd/MM/yyyy HH:mm:ss")
-                </td>
-                <td>
-                    item.FechaBaja.ToString("dd/MM/yyyy HH:mm:ss")
-                </td>
-                <td>
-                    <button class="btn btn-outline-warning" data-bs-toggle="tooltip" data-bs-title="Editar"><i class="bi bi-pencil-fill"></i></button>
-                </td>
-            </tr>
         </tbody>
     </table>
 </div>
@@ -70,8 +54,8 @@
 <script src="~/lib/popper/js/popper.min.js"></script>
 
 <script>
-    const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
-    const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
+    var tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+    var tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
 </script>
 
 <script>

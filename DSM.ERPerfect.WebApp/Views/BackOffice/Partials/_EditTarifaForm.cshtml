@@ -1,0 +1,12 @@
+﻿@using DSM.ERPerfect.Models.Entities
+@model Tarifa
+
+<input type="hidden" id="modal-edit-tarifa-id" value="@Model.IdTarifa">
+<div class="form-floating mb-3">
+    <input type="text" class="form-control" id="modal-edit-tarifa-descripcion" placeholder="Corte pelo..." value="@Model.Descripcion">
+    <label for="modal-edit-tarifa-descripcion">Descripción</label>
+</div>
+<div class="form-floating mb-3">
+    <input type="number" class="form-control" id="modal-edit-tarifa-precio" placeholder="12,90" value="@Model.Precio.ToString().Replace(",",".")">
+    <label for="modal-edit-tarifa-precio">Precio</label>
+</div>

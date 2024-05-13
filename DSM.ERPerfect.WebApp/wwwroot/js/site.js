@@ -1,5 +1,10 @@
 ﻿console.log("site.js loaded correctly!");
 
+//// Hide loader when body is complete loaded
+//window.addEventListener('DOMContentLoaded', () => {
+//    $("#main-loader").toggleClass("d-none");
+//});
+
 function ShowOrHideMainLoader() {
     var loadingHide = $('#main-loader').attr('class').indexOf("d-none");
     if (loadingHide > 0) {
