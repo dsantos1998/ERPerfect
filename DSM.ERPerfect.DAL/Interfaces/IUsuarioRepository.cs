@@ -13,5 +13,6 @@ namespace DSM.ERPerfect.DAL.Interfaces
         public ResultInfo<int> DisabledUsuario(int idUsuario);
         public ResultInfo<int> EnabledUsuario(int idUsuario);
         public ResultInfo<int> DeleteUsuario(int idUsuario);
+        public ResultInfo<Usuario> GetUsuarioById(int idUsuario);
     }
 }

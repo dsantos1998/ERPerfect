@@ -1,7 +1,9 @@
 ﻿using DSM.ERPerfect.BLL.Interfaces;
 using DSM.ERPerfect.DAL.Interfaces;
+using DSM.ERPerfect.Helpers;
 using DSM.ERPerfect.Models.Entities;
 using DSM.ERPerfect.Models.Errors;
+using DSM.ERPerfect.Models.VM.Login;
 
 namespace DSM.ERPerfect.BLL
 {
@@ -33,11 +35,24 @@ namespace DSM.ERPerfect.BLL
 
         public ResultInfo<int> NewUsuario(Usuario item)
         {
+            // Hash password
+            byte[] derivedKey = EncryptHelper.GenerateDerivedKey(item.Password);
+            string passwordHashed = EncryptHelper.EncryptPassword(item.Password, derivedKey);
+            item.Password = passwordHashed;
+
             return _usuarioRepository.NewUsuario(item);
         }
 
-        public ResultInfo<int> UpdateUsuario(Usuario item)
+        public ResultInfo<int> UpdateUsuario(Usuario item, bool resetPassword = false)
         {
+            if (resetPassword)
+            {
+                // Hash password
+                byte[] derivedKey = EncryptHelper.GenerateDerivedKey(item.Password);
+                string passwordHashed = EncryptHelper.EncryptPassword(item.Password, derivedKey);
+                item.Password = passwordHashed;
+            }
+
             return _usuarioRepository.UpdateUsuario(item);
         }
 
@@ -56,6 +71,10 @@ namespace DSM.ERPerfect.BLL
             return _usuarioRepository.DeleteUsuario(idUsuario);
         }
 
+        public ResultInfo<Usuario> GetUsuarioById(int idUsuario)
+        {
+            return _usuarioRepository.GetUsuarioById(idUsuario);
+        }
 
         #endregion
 

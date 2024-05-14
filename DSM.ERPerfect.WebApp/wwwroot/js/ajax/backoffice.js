@@ -473,3 +473,238 @@ function EnabledServicio() {
 }
 
 // FIN SERVICIOS
+
+// INICIO SERVICIOS
+
+function LoadUsuarios(active) {
+
+    ShowOrHideMainLoader();
+
+    //Load function
+    $("#backoffice-container").load(
+        "/BackOffice/LoadUsuarios",
+        {
+            active: active
+        },
+        function (response, status, xhr) {
+
+            ShowOrHideMainLoader();
+
+            if (status == "error") {
+                var errors = JSON.parse(response);
+
+                LoadToastErrors(errors);
+            }
+
+        }
+    );
+
+}
+
+function SaveUsuario() {
+
+    ShowOrHideMainLoader();
+
+    var login = $("#modal-add-usuario-login").val();
+    var password = $("#modal-add-usuario-password").val();
+    var nombre = $("#modal-add-usuario-nombre").val();
+    var apellidos = $("#modal-add-usuario-apellidos").val();
+    var idRol = $("#modal-add-usuario-rol").val();
+
+    $.ajax({
+        url: '/BackOffice/SaveUsuario',
+        type: 'POST',
+        data: {
+            login: login,
+            password: password,
+            nombre: nombre,
+            apellidos: apellidos,
+            idRol: idRol
+        },
+        success: function (response) {
+
+            ShowOrHideMainLoader();
+
+            $("#modal-add-usuario-close").click();
+
+            LoadToastErrors(response);
+
+            var login = $("#modal-add-usuario-login").val("");
+            var password = $("#modal-add-usuario-password").val("");
+            var nombre = $("#modal-add-usuario-nombre").val("");
+            var apellidos = $("#modal-add-usuario-apellidos").val("");
+            var idRol = $("#modal-add-usuario-rol").val(0);
+
+            LoadUsuarios(true);
+        },
+        error: function (xhr, status, error) {
+            ShowOrHideMainLoader();
+
+            var errors = JSON.parse(xhr.responseText);
+
+            LoadToastErrors(errors);
+
+            $("#modal-add-usuario-close").click();
+
+            $("#modal-add-usuario-descripcion").val("");
+            $("#modal-add-usuario-precio").val("");
+        }
+    });
+
+}
+
+function EditarUsuario() {
+
+    ShowOrHideMainLoader();
+
+    var login = $("#modal-edit-usuario-login").val();
+    var password = $("#modal-edit-usuario-password").val();
+    var nombre = $("#modal-edit-usuario-nombre").val();
+    var apellidos = $("#modal-edit-usuario-apellidos").val();
+    var idRol = $("#modal-edit-usuario-rol").val();
+    var idUsuario = $("#modal-edit-usuario-id").val();
+
+    $.ajax({
+        url: '/BackOffice/EditarUsuario',
+        type: 'POST',
+        data: {
+            idUsuario: idUsuario,
+            login: login,
+            password: password,
+            nombre: nombre,
+            apellidos: apellidos,
+            idRol: idRol
+        },
+        success: function (response) {
+
+            ShowOrHideMainLoader();
+
+            $("#modal-edit-usuario-close").click();
+
+            LoadToastErrors(response);
+
+            LoadUsuarios(true);
+        },
+        error: function (xhr, status, error) {
+            ShowOrHideMainLoader();
+
+            var errors = JSON.parse(xhr.responseText);
+
+            LoadToastErrors(errors);
+
+            $("#modal-edit-usuario-close").click();
+        }
+    });
+
+}
+
+function ShowDisabledUsuario(idUsuario) {
+
+    $("#modal-disabled-usuario").modal("toggle");
+    $("#modal-disabled-usuario-id").val(idUsuario);
+
+}
+
+function ShowEnabledUsuario(idUsuario) {
+
+    $("#modal-enabled-usuario").modal("toggle");
+    $("#modal-enabled-usuario-id").val(idUsuario);
+
+}
+
+function ShowEditarUsuario(idUsuario) {
+
+    ShowOrHideMainLoader();
+
+    //Load function
+    $("#modal-edit-usuario-body").load(
+        "/BackOffice/ShowEditarUsuario",
+        {
+            idUsuario: idUsuario
+        },
+        function (response, status, xhr) {
+
+            ShowOrHideMainLoader();
+
+            if (status == "error") {
+                var errors = JSON.parse(response);
+
+                LoadToastErrors(errors);
+            }
+            else {
+                $("#modal-edit-usuario").modal("toggle");
+            }
+        }
+    );
+
+}
+
+function DisabledUsuario() {
+
+    ShowOrHideMainLoader();
+
+    var idUsuario = $("#modal-disabled-usuario-id").val();
+
+    $.ajax({
+        url: '/BackOffice/DisabledUsuario',
+        type: 'POST',
+        data: {
+            idUsuario: idUsuario
+        },
+        success: function (response) {
+
+            ShowOrHideMainLoader();
+
+            $("#modal-disabled-usuario-close").click();
+
+            LoadToastErrors(response);
+
+            LoadUsuarios(true);
+        },
+        error: function (xhr, status, error) {
+            ShowOrHideMainLoader();
+
+            var errors = JSON.parse(xhr.responseText);
+
+            LoadToastErrors(errors);
+
+            $("#modal-disabled-usuario-close").click();
+        }
+    });
+}
+
+function EnabledUsuario() {
+
+    ShowOrHideMainLoader();
+
+    var idUsuario = $("#modal-enabled-usuario-id").val();
+
+    $.ajax({
+        url: '/BackOffice/EnabledUsuario',
+        type: 'POST',
+        data: {
+            idUsuario: idUsuario
+        },
+        success: function (response) {
+
+            ShowOrHideMainLoader();
+
+            $("#modal-enabled-usuario-close").click();
+
+            LoadToastErrors(response);
+
+            LoadUsuarios(false);
+        },
+        error: function (xhr, status, error) {
+            ShowOrHideMainLoader();
+
+            var errors = JSON.parse(xhr.responseText);
+
+            LoadToastErrors(errors);
+
+            $("#modal-enabled-usuario-close").click();
+        }
+    });
+}
+
+// FIN SERVICIOS

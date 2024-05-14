@@ -45,6 +45,18 @@ namespace DSM.ERPerfect.WebApp.Controllers
                 return StatusCode(StatusCodes.Status401Unauthorized, "Credenciales inválidas");
             }
 
+            // Check if user is still active
+            if(resultUsuario.Content.FechaBaja != null)
+            {
+                if(resultUsuario.Content.FechaBaja <= DateTime.Now)
+                {
+                    List<ResultError> errors = new List<ResultError>();
+                    errors.Add(new ResultError($"El usuario con login '{login.UserName}' está dado de baja desde el día: '{resultUsuario.Content.FechaBaja.Value.ToString("dd/MM/yyyy HH:mm:ss")}'", false, "LoginController.LogIn(LoginVM)"));
+                    LoggedErrors(_logger, errors);
+                    return StatusCode(StatusCodes.Status401Unauthorized, "Credenciales inválidas");
+                }
+            }
+
             // Check login limits
             if (resultUsuario.Content.Intentos >= 10)
             {

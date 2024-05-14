@@ -20,6 +20,7 @@ namespace DSM.ERPerfect.WebApp.Controllers
         private ITarifaBusiness _tarifaBusiness { get; init; }
         private IServicioBusiness _servicioBusiness { get; init; }
         private ITarifaServicioBusiness _tarifaServicioBusiness { get; init; }
+        private IRolBusiness _rolBusiness { get; init; }
 
         #endregion
 
@@ -29,13 +30,15 @@ namespace DSM.ERPerfect.WebApp.Controllers
             , IUsuarioBusiness usuarioBusiness
             , ITarifaBusiness tarifaBusiness
             , IServicioBusiness servicioBusiness
-            , ITarifaServicioBusiness tarifaServicioBusiness)
+            , ITarifaServicioBusiness tarifaServicioBusiness
+            , IRolBusiness rolBusiness)
         {
             _logger = logger;
             _usuarioBusiness = usuarioBusiness;
             _tarifaBusiness = tarifaBusiness;
             _servicioBusiness = servicioBusiness;
             _tarifaServicioBusiness = tarifaServicioBusiness;
+            _rolBusiness = rolBusiness;
         }
 
         #endregion
@@ -478,6 +481,200 @@ namespace DSM.ERPerfect.WebApp.Controllers
 
         #endregion
 
+        #region Usuarios
+
+        public IActionResult SaveUsuario(string login, string password, string nombre, string apellidos, int idRol)
+        {
+            // Check cookie user
+            CookieUsuario? cookieUsuario = CheckLoginCookie();
+            if (cookieUsuario == null)
+            {
+                List<ResultError> errors = new List<ResultError>() { new ResultError("Usuario no logueado", false, "BackOfficeController.SaveUsuario()") };
+                return SendErrorsToView(errors);
+            }
+
+            if (string.IsNullOrEmpty(login))
+            {
+                List<ResultError> errors = new List<ResultError>() { new ResultError("El login no puede ir vacío", false, "BackOfficeController.SaveUsuario()") };
+                return SendErrorsToView(errors);
+            }
+
+            if (string.IsNullOrEmpty(password))
+            {
+                List<ResultError> errors = new List<ResultError>() { new ResultError("El password no puede ir vacío", false, "BackOfficeController.SaveUsuario()") };
+                return SendErrorsToView(errors);
+            }
+
+            if (string.IsNullOrEmpty(nombre))
+            {
+                List<ResultError> errors = new List<ResultError>() { new ResultError("El nombre no puede ir vacío", false, "BackOfficeController.SaveUsuario()") };
+                return SendErrorsToView(errors);
+            }
+
+            if (string.IsNullOrEmpty(apellidos))
+            {
+                List<ResultError> errors = new List<ResultError>() { new ResultError("Los apellidos no puede ir vacios", false, "BackOfficeController.SaveUsuario()") };
+                return SendErrorsToView(errors);
+            }
+
+            if (idRol <= 0)
+            {
+                List<ResultError> errors = new List<ResultError>() { new ResultError("Es necesario seleccionar un Rol", false, "BackOfficeController.SaveUsuario()") };
+                return SendErrorsToView(errors);
+            }
+
+            // Save usuario
+            Usuario item = new Usuario()
+            {
+                IdUsuario = 0,
+                IdRol = idRol,
+                Login = login,
+                Password = password,
+                Nombre = nombre,
+                Apellidos = apellidos,
+                FechaAlta = DateTime.Now,
+                RowGUID = new Guid(),
+                Intentos = 0
+            };
+            var resultSaveUsuario = _usuarioBusiness.NewUsuario(item);
+            if (resultSaveUsuario.HasErrors)
+            {
+                LoggedErrors(_logger, resultSaveUsuario.Errors);
+                return SendErrorsToView(resultSaveUsuario.Errors);
+            }
+
+            List<ResultError> errores = new List<ResultError>() { new ResultError("Usuario creado correctamente", null, "Exito") };
+            return StatusCode(200, errores);
+        }
+
+        public IActionResult DisabledUsuario(int idUsuario)
+        {
+            // Check cookie user
+            CookieUsuario? cookieUsuario = CheckLoginCookie();
+            if (cookieUsuario == null)
+            {
+                List<ResultError> errors = new List<ResultError>() { new ResultError("Usuario no logueado", false, "BackOfficeController.DisabledUsuario()") };
+                return SendErrorsToView(errors);
+            }
+
+            if (idUsuario <= 0)
+            {
+                List<ResultError> errors = new List<ResultError>() { new ResultError("El usuario seleccionado no está disponible", false, "BackOfficeController.DisabledUsuario()") };
+                return SendErrorsToView(errors);
+            }
+
+            // Disable usuario
+            ResultInfo<int> resultDisabledUsuario = _usuarioBusiness.DisabledUsuario(idUsuario);
+            if (resultDisabledUsuario.HasErrors)
+            {
+                LoggedErrors(_logger, resultDisabledUsuario.Errors);
+                return SendErrorsToView(resultDisabledUsuario.Errors);
+            }
+
+            List<ResultError> errores = new List<ResultError>() { new ResultError("Usuario desactivado correctamente", null, "Exito") };
+            return StatusCode(200, errores);
+        }
+
+        public IActionResult EnabledUsuario(int idUsuario)
+        {
+            // Check cookie user
+            CookieUsuario? cookieUsuario = CheckLoginCookie();
+            if (cookieUsuario == null)
+            {
+                List<ResultError> errors = new List<ResultError>() { new ResultError("Usuario no logueado", false, "BackOfficeController.EnabledUsuario()") };
+                return SendErrorsToView(errors);
+            }
+
+            if (idUsuario <= 0)
+            {
+                List<ResultError> errors = new List<ResultError>() { new ResultError("El usuario seleccionado no está disponible", false, "BackOfficeController.EnabledUsuario()") };
+                return SendErrorsToView(errors);
+            }
+
+            // Get TarifaUsuario
+            ResultInfo<int> resultEnabledUsuario = _usuarioBusiness.EnabledUsuario(idUsuario);
+            if (resultEnabledUsuario.HasErrors)
+            {
+                LoggedErrors(_logger, resultEnabledUsuario.Errors);
+                return SendErrorsToView(resultEnabledUsuario.Errors);
+            }
+
+            List<ResultError> errores = new List<ResultError>() { new ResultError("Usuario activado correctamente", null, "Exito") };
+            return StatusCode(200, errores);
+        }
+
+        public IActionResult EditarUsuario(int idUsuario, string login, string password, string nombre, string apellidos, int idRol)
+        {
+            // Check cookie user
+            CookieUsuario? cookieUsuario = CheckLoginCookie();
+            if (cookieUsuario == null)
+            {
+                List<ResultError> errors = new List<ResultError>() { new ResultError("Usuario no logueado", false, "BackOfficeController.EditarUsuario()") };
+                return SendErrorsToView(errors);
+            }
+
+            if (string.IsNullOrEmpty(login))
+            {
+                List<ResultError> errors = new List<ResultError>() { new ResultError("El login no puede ir vacío", false, "BackOfficeController.EditarUsuario()") };
+                return SendErrorsToView(errors);
+            }
+
+            if (string.IsNullOrEmpty(password))
+            {
+                List<ResultError> errors = new List<ResultError>() { new ResultError("El password no puede ir vacío", false, "BackOfficeController.EditarUsuario()") };
+                return SendErrorsToView(errors);
+            }
+
+            if (string.IsNullOrEmpty(nombre))
+            {
+                List<ResultError> errors = new List<ResultError>() { new ResultError("El nombre no puede ir vacío", false, "BackOfficeController.EditarUsuario()") };
+                return SendErrorsToView(errors);
+            }
+
+            if (string.IsNullOrEmpty(apellidos))
+            {
+                List<ResultError> errors = new List<ResultError>() { new ResultError("Los apellidos no puede ir vacios", false, "BackOfficeController.EditarUsuario()") };
+                return SendErrorsToView(errors);
+            }
+
+            if (idRol <= 0)
+            {
+                List<ResultError> errors = new List<ResultError>() { new ResultError("Es necesario seleccionar un Rol", false, "BackOfficeController.EditarUsuario()") };
+                return SendErrorsToView(errors);
+            }
+
+            if (idUsuario <= 0)
+            {
+                List<ResultError> errors = new List<ResultError>() { new ResultError("El usuario seleccionado no está disponible", false, "BackOfficeController.EditarUsuario()") };
+                return SendErrorsToView(errors);
+            }
+
+            // Update usuario
+            Usuario item = new Usuario()
+            {
+                IdUsuario = idUsuario,
+                IdRol = idRol,
+                Login = login,
+                Password = password,
+                Nombre = nombre,
+                Apellidos = apellidos,
+                FechaAlta = DateTime.Now,
+                RowGUID = new Guid(),
+                Intentos = 0
+            };
+            var resultSaveUsuario = _usuarioBusiness.UpdateUsuario(item, true);
+            if (resultSaveUsuario.HasErrors)
+            {
+                LoggedErrors(_logger, resultSaveUsuario.Errors);
+                return SendErrorsToView(resultSaveUsuario.Errors);
+            }
+
+            List<ResultError> errores = new List<ResultError>() { new ResultError("Usuario actualizado correctamente", null, "Exito") };
+            return StatusCode(200, errores);
+        }
+
+        #endregion
+
         #endregion
 
         #region HTML Calls
@@ -632,6 +829,87 @@ namespace DSM.ERPerfect.WebApp.Controllers
                 List<ResultError> errors = new List<ResultError>() { new ResultError($"No existe ninguna TarifaServicio con IdServicio: '{idServicio}' e IdTarifa: '{idTarifa}'", false, "BackOfficeController.ShowEditarServicio()") };
                 return SendErrorsToView(errors);
             }
+        }
+
+        #endregion
+
+        #region Usuarios
+
+        public IActionResult LoadUsuarios(bool active)
+        {
+            UsuarioVM result = new UsuarioVM();
+            result.Active = active;
+
+            // Check cookie user
+            CookieUsuario? cookieUsuario = CheckLoginCookie();
+            if (cookieUsuario == null)
+            {
+                List<ResultError> errors = new List<ResultError>() { new ResultError("Usuario no logueado", false, "BackOfficeController.EnabledUsuario()") };
+                return SendErrorsToView(errors);
+            }
+
+            // Get roles
+            ResultInfo<List<Rol>> resultRoles = _rolBusiness.GetRoles();
+            if (resultRoles.HasErrors)
+            {
+                LoggedErrors(_logger, resultRoles.Errors);
+                return SendErrorsToView(resultRoles.Errors);
+            }
+            result.Roles = resultRoles.Content;
+
+            // Get usuarios
+            ResultInfo<List<Usuario>> resultUsuarios = _usuarioBusiness.GetUsuarios();
+            if (resultUsuarios.HasErrors)
+            {
+                LoggedErrors(_logger, resultUsuarios.Errors);
+                return SendErrorsToView(resultUsuarios.Errors);
+            }
+
+            if (resultUsuarios.Content != null)
+            {
+                if (active)
+                {
+                    result.Usuarios = resultUsuarios.Content.Where(x => x.FechaBaja == null || x.FechaBaja >= DateTime.Now).ToList();
+                }
+                else
+                {
+                    result.Usuarios = resultUsuarios.Content.Where(x => x.FechaBaja < DateTime.Now).ToList();
+                }
+            }
+            return PartialView("~/Views/BackOffice/Partials/_TablaUsuarios.cshtml", result);
+        }
+
+        public IActionResult ShowEditarUsuario(int idUsuario)
+        {
+            UsuarioVM result = new UsuarioVM();
+
+            // Check cookie user
+            CookieUsuario? cookieUsuario = CheckLoginCookie();
+            if (cookieUsuario == null)
+            {
+                List<ResultError> errors = new List<ResultError>() { new ResultError("Usuario no logueado", false, "BackOfficeController.ShowEditarUsuario()") };
+                return SendErrorsToView(errors);
+            }
+
+            // Get TarifaUsuario
+            ResultInfo<Usuario> resultUsuario = _usuarioBusiness.GetUsuarioById(idUsuario);
+            if (resultUsuario.HasErrors)
+            {
+                LoggedErrors(_logger, resultUsuario.Errors);
+                return SendErrorsToView(resultUsuario.Errors);
+            }
+            result.Usuario = resultUsuario.Content;
+
+            // Get roles
+            ResultInfo<List<Rol>> resultRoles = _rolBusiness.GetRoles();
+            if (resultRoles.HasErrors)
+            {
+                LoggedErrors(_logger, resultRoles.Errors);
+                return SendErrorsToView(resultRoles.Errors);
+            }
+            result.Roles = resultRoles.Content;
+
+            return PartialView("~/Views/BackOffice/Partials/_EditUsuarioForm.cshtml", result);
         }
 
         #endregion

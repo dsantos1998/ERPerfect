@@ -117,6 +117,39 @@ namespace DSM.ERPerfect.DAL
             return result;
         }
 
+        public ResultInfo<Usuario> GetUsuarioById(int idUsuario)
+        {
+            ResultInfo<Usuario> result = new ResultInfo<Usuario>();
+            string procedure = "SP_SEL_GetUsuarioById";
+            try
+            {
+                using (SQLHelper repo = new SQLHelper(conString, false))
+                {
+                    var dbres = repo.ExecuteProcedure(procedure, new { IdUsuario = idUsuario });
+
+                    if (!string.IsNullOrEmpty(repo.LastErrorString))
+                    {
+                        result.Errors.Add(new ResultError(repo.LastErrorString, false, "UsuarioRepository.GetUsuarioById"));
+                    }
+                    else if (dbres == null || dbres.Rows.Count == 0)
+                    {
+                        result.Errors.Add(new ResultError($"No existe ningún usuario con el id: '{idUsuario}'", false, "UsuarioRepository.GetUsuarioById"));
+                    }
+                    else
+                    {
+                        result.Content = DataRowHelper<Usuario>.Get(dbres.Rows[0]);
+                    }
+                    dbres?.Dispose();
+                }
+            }
+            catch (Exception ex)
+            {
+                result.Errors.Add(new ResultError(ex.InnerException == null ? ex.Message : ex.InnerException.Message, true, "UsuarioRepository.GetUsuarioById"));
+            }
+
+            return result;
+        }
+
         #endregion
 
         #region CREATE, UPDATE, DELETE

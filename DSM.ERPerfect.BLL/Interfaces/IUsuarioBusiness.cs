@@ -9,9 +9,10 @@ namespace DSM.ERPerfect.BLL.Interfaces
         public ResultInfo<Usuario> GetUsuarioByRowGUID(Guid guid);
         public ResultInfo<Usuario> GetUsuarioByLogin(string login);
         public ResultInfo<int> NewUsuario(Usuario item);
-        public ResultInfo<int> UpdateUsuario(Usuario item);
+        public ResultInfo<int> UpdateUsuario(Usuario item, bool resetPassword = false);
         public ResultInfo<int> DisabledUsuario(int idUsuario);
         public ResultInfo<int> EnabledUsuario(int idUsuario);
         public ResultInfo<int> DeleteUsuario(int idUsuario);
+        public ResultInfo<Usuario> GetUsuarioById(int idUsuario);
     }
 }

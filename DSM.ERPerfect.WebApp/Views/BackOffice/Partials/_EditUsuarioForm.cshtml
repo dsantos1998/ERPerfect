@@ -1,0 +1,55 @@
+﻿@using DSM.ERPerfect.Models.VM.BackOffice
+@model UsuarioVM
+
+@if (Model != null)
+{
+    if (Model.Usuario != null)
+    {
+        <input type="hidden" id="modal-edit-usuario-id" value="@Model.Usuario.IdUsuario">
+        <div class="form-floating mb-3">
+            <select class="form-select" id="modal-edit-usuario-rol" aria-label="Floating label select example">
+                @if (Model.Roles != null)
+                {
+                    if (Model.Roles.Count > 0)
+                    {
+                        var rol = Model.Roles.Where(x => x.IdRol == Model.Usuario.IdRol).First();
+                        var listaRoles = Model.Roles.Where(x => x.IdRol != Model.Usuario.IdRol).ToList();
+
+                        if (rol != null)
+                        {
+                            <option value="@rol.IdRol" selected>@rol.Descripcion</option>
+                        }
+
+                        if (listaRoles != null)
+                        {
+                            if (listaRoles.Count > 0)
+                            {
+                                foreach (var item in listaRoles)
+                                {
+                                    <option value="@item.IdRol">@item.Descripcion</option>
+                                }
+                            }
+                        }
+                    }
+                }
+            </select>
+            <label for="modal-edit-usuario-rol">Rol</label>
+        </div>
+        <div class="form-floating mb-3">
+            <input type="text" class="form-control" id="modal-edit-usuario-login" placeholder="dsantos" value="@Model.Usuario.Login">
+            <label for="modal-edit-usuario-login">Login</label>
+        </div>
+        <div class="form-floating mb-3">
+            <input type="password" class="form-control" id="modal-edit-usuario-password" placeholder="password">
+            <label for="modal-edit-usuario-password">Password</label>
+        </div>
+        <div class="form-floating mb-3">
+            <input type="text" class="form-control" id="modal-edit-usuario-nombre" placeholder="Daniel" value="@Model.Usuario.Nombre">
+            <label for="modal-edit-usuario-nombre">Nombre</label>
+        </div>
+        <div class="form-floating mb-3">
+            <input type="text" class="form-control" id="modal-edit-usuario-apellidos" placeholder="Santos Mundiña" value="@Model.Usuario.Apellidos">
+            <label for="modal-edit-usuario-apellidos">Apellidos</label>
+        </div>
+    }
+}
