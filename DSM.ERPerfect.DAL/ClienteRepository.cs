@@ -54,7 +54,7 @@ namespace DSM.ERPerfect.DAL
         public ResultInfo<Cliente> GetClienteById(int id)
         {
             ResultInfo<Cliente> result = new ResultInfo<Cliente>();
-            string procedure = "SP_QUERY_GetClientes";
+            string procedure = "SP_SEL_GetClienteById";
             try
             {
                 using (SQLHelper repo = new SQLHelper(conString, false))

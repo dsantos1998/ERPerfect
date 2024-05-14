@@ -1,3 +1,4 @@
+using DSM.ERPerfect.BLL;
 using DSM.ERPerfect.BLL.Interfaces;
 using DSM.ERPerfect.Helpers;
 using DSM.ERPerfect.Models.Cookies;
@@ -16,6 +17,7 @@ namespace DSM.ERPerfect.WebApp.Controllers
         private readonly ILogger<HomeController> _logger;
         private IUsuarioBusiness _usuarioBusiness { get; init; }
         private IFacturaBusiness _facturaBusiness { get; init; }
+        private IClienteBusiness _clienteBusiness { get; init; }
 
         #endregion
 
@@ -23,11 +25,13 @@ namespace DSM.ERPerfect.WebApp.Controllers
 
         public HomeController(ILogger<HomeController> logger
             , IUsuarioBusiness usuarioBusiness
-            , IFacturaBusiness facturaBusiness)
+            , IFacturaBusiness facturaBusiness
+            , IClienteBusiness clienteBusiness)
         {
             _logger = logger;
             _usuarioBusiness = usuarioBusiness;
             _facturaBusiness = facturaBusiness;
+            _clienteBusiness = clienteBusiness;
         }
 
         #endregion
@@ -62,7 +66,8 @@ namespace DSM.ERPerfect.WebApp.Controllers
 
         public IActionResult Clients()
         {
-            ClientsVM result = new ClientsVM();
+            ClienteVM result = new ClienteVM();
+            result.Active = true;
 
             // Check cookie user
             CookieUsuario? cookieUsuario = CheckLoginCookie();
@@ -72,12 +77,163 @@ namespace DSM.ERPerfect.WebApp.Controllers
             }
             result.CookieUsuario = cookieUsuario;
 
+            // Get clientes
+            ResultInfo<List<Cliente>> resultClientes = _clienteBusiness.GetClientes();
+            if (resultClientes.HasErrors)
+            {
+                LoggedErrors(_logger, resultClientes.Errors);
+                return SendErrorsToView(resultClientes.Errors);
+            }
+            result.Clientes = resultClientes.Content;
+
             return View(result);
         }
 
         #endregion
 
+        #region AJAX Calls
+
+        public IActionResult SaveCliente(string nombre, string? apellidos, int? telefono, string? email, string? dni)
+        {
+            // Check cookie user
+            CookieUsuario? cookieUsuario = CheckLoginCookie();
+            if (cookieUsuario == null)
+            {
+                List<ResultError> errors = new List<ResultError>() { new ResultError("Usuario no logueado", false, "HomeController.SaveCliente()") };
+                return SendErrorsToView(errors);
+            }
+
+            if (string.IsNullOrEmpty(nombre))
+            {
+                List<ResultError> errors = new List<ResultError>() { new ResultError("El nombre no puede ser vacío", false, "HomeController.SaveCliente()") };
+                return SendErrorsToView(errors);
+            }
+
+            // Save cliente
+            Cliente item = new Cliente()
+            {
+                IdCliente = 0,
+                Nombre = nombre,
+                Apellidos = apellidos,
+                Telefono = telefono != null ? telefono.ToString() : null,
+                Email = email,
+                DNI = dni,
+                FechaAlta = DateTime.Now
+            };
+            var resultSaveCliente = _clienteBusiness.NewCliente(item);
+            if (resultSaveCliente.HasErrors)
+            {
+                LoggedErrors(_logger, resultSaveCliente.Errors);
+                return SendErrorsToView(resultSaveCliente.Errors);
+            }
+
+            List<ResultError> errores = new List<ResultError>() { new ResultError("Cliente creado correctamente", null, "Exito") };
+            return StatusCode(200, errores);
+        }
+
+        public IActionResult DisabledCliente(int id)
+        {
+            // Check cookie user
+            CookieUsuario? cookieUsuario = CheckLoginCookie();
+            if (cookieUsuario == null)
+            {
+                List<ResultError> errors = new List<ResultError>() { new ResultError("Usuario no logueado", false, "HomeController.DisabledCliente()") };
+                return SendErrorsToView(errors);
+            }
+
+            if (id <= 0)
+            {
+                List<ResultError> errors = new List<ResultError>() { new ResultError("El cliente seleccionado no está disponible", false, "HomeController.DisabledCliente()") };
+                return SendErrorsToView(errors);
+            }
+
+            var resultCliente = _clienteBusiness.DisabledCliente(id);
+            if (resultCliente.HasErrors)
+            {
+                LoggedErrors(_logger, resultCliente.Errors);
+                return SendErrorsToView(resultCliente.Errors);
+            }
+
+            List<ResultError> errores = new List<ResultError>() { new ResultError("Cliente desactivado correctamente", null, "Exito") };
+            return StatusCode(200, errores);
+        }
+
+        public IActionResult EnabledCliente(int id)
+        {
+            // Check cookie user
+            CookieUsuario? cookieUsuario = CheckLoginCookie();
+            if (cookieUsuario == null)
+            {
+                List<ResultError> errors = new List<ResultError>() { new ResultError("Usuario no logueado", false, "HomeController.EnabledCliente()") };
+                return SendErrorsToView(errors);
+            }
+
+            if (id <= 0)
+            {
+                List<ResultError> errors = new List<ResultError>() { new ResultError("El cliente seleccionado no está disponible", false, "HomeController.EnabledCliente()") };
+                return SendErrorsToView(errors);
+            }
+
+            var resultCliente = _clienteBusiness.EnabledCliente(id);
+            if (resultCliente.HasErrors)
+            {
+                LoggedErrors(_logger, resultCliente.Errors);
+                return SendErrorsToView(resultCliente.Errors);
+            }
+
+            List<ResultError> errores = new List<ResultError>() { new ResultError("Cliente activado correctamente", null, "Exito") };
+            return StatusCode(200, errores);
+        }
+
+        public IActionResult EditarCliente(int id, string nombre, string? apellidos, int? telefono, string? email, string? dni)
+        {
+            // Check cookie user
+            CookieUsuario? cookieUsuario = CheckLoginCookie();
+            if (cookieUsuario == null)
+            {
+                List<ResultError> errors = new List<ResultError>() { new ResultError("Usuario no logueado", false, "HomeController.EditarCliente()") };
+                return SendErrorsToView(errors);
+            }
+
+            if (id <= 0)
+            {
+                List<ResultError> errors = new List<ResultError>() { new ResultError("El cliente seleccionada no está disponible", false, "HomeController.EditarCliente()") };
+                return SendErrorsToView(errors);
+            }
+
+            if (string.IsNullOrEmpty(nombre))
+            {
+                List<ResultError> errors = new List<ResultError>() { new ResultError("El nombre no puede ir vacío", false, "HomeController.EditarCliente()") };
+                return SendErrorsToView(errors);
+            }
+
+            // Update cliente
+            Cliente item = new Cliente()
+            {
+                IdCliente = id,
+                Nombre = nombre,
+                Apellidos = apellidos,
+                Telefono = telefono != null ? telefono.ToString() : null,
+                Email = email,
+                DNI = dni,
+                FechaAlta = DateTime.Now
+            };
+            var resultCliente = _clienteBusiness.UpdateCliente(item);
+            if (resultCliente.HasErrors)
+            {
+                LoggedErrors(_logger, resultCliente.Errors);
+                return SendErrorsToView(resultCliente.Errors);
+            }
+
+            List<ResultError> errores = new List<ResultError>() { new ResultError("Cliente actualizado correctamente", null, "Exito") };
+            return StatusCode(200, errores);
+        }
+
+        #endregion
+
         #region HTML Calls
+
+        #region Statistics
 
         public IActionResult GetPaymentBills()
         {
@@ -118,6 +274,68 @@ namespace DSM.ERPerfect.WebApp.Controllers
 
             return PartialView("~/Views/Home/Partials/_ChartTop5Servicios.cshtml", resultTop5Servicios.Content);
         }
+
+        #endregion
+
+        #region Client
+
+        public IActionResult LoadClientes(bool active)
+        {
+            ClienteVM result = new ClienteVM();
+            result.Active = active;
+
+            // Check cookie user
+            CookieUsuario? cookieUsuario = CheckLoginCookie();
+            if (cookieUsuario == null)
+            {
+                List<ResultError> errors = new List<ResultError>() { new ResultError("Usuario no logueado", false, "HomeController.EnabledCliente()") };
+                return SendErrorsToView(errors);
+            }
+
+            // Get clientes
+            ResultInfo<List<Cliente>> resultClientes = _clienteBusiness.GetClientes();
+            if (resultClientes.HasErrors)
+            {
+                LoggedErrors(_logger, resultClientes.Errors);
+                return SendErrorsToView(resultClientes.Errors);
+            }
+
+            if (resultClientes.Content != null)
+            {
+                if (active)
+                {
+                    result.Clientes = resultClientes.Content.Where(x => x.FechaBaja == null || x.FechaBaja >= DateTime.Now).ToList();
+                }
+                else
+                {
+                    result.Clientes = resultClientes.Content.Where(x => x.FechaBaja == null || x.FechaBaja < DateTime.Now).ToList();
+                }
+            }
+            return PartialView("~/Views/Home/Partials/_TablaClientes.cshtml", result);
+        }
+
+        public IActionResult ShowEditarCliente(int id)
+        {
+            // Check cookie user
+            CookieUsuario? cookieUsuario = CheckLoginCookie();
+            if (cookieUsuario == null)
+            {
+                List<ResultError> errors = new List<ResultError>() { new ResultError("Usuario no logueado", false, "HomeController.ShowEditarCliente()") };
+                return SendErrorsToView(errors);
+            }
+
+            // Get cliente by id
+            ResultInfo<Cliente> resultCliente = _clienteBusiness.GetClienteById(id);
+            if (resultCliente.HasErrors)
+            {
+                LoggedErrors(_logger, resultCliente.Errors);
+                return SendErrorsToView(resultCliente.Errors);
+            }
+
+            return PartialView("~/Views/Home/Partials/_EditClienteForm.cshtml", resultCliente.Content);
+        }
+
+        #endregion
 
         #endregion
 

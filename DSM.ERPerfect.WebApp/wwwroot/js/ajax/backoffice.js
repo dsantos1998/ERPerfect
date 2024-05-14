@@ -27,31 +27,6 @@ function LoadTarifas(active) {
 
 }
 
-function LoadUsuarios(active) {
-
-    ShowOrHideMainLoader();
-
-    //Load function
-    $("#backoffice-container").load(
-        "/BackOffice/LoadUsuarios",
-        {
-            active: active
-        },
-        function (response, status, xhr) {
-
-            ShowOrHideMainLoader();
-
-            if (status == "error") {
-                var errors = JSON.parse(response);
-
-                LoadToastErrors(errors);
-            }
-
-        }
-    );
-
-}
-
 function SaveTarifa() {
 
     ShowOrHideMainLoader();
@@ -474,7 +449,7 @@ function EnabledServicio() {
 
 // FIN SERVICIOS
 
-// INICIO SERVICIOS
+// INICIO USUARIOS
 
 function LoadUsuarios(active) {
 
@@ -707,4 +682,4 @@ function EnabledUsuario() {
     });
 }
 
-// FIN SERVICIOS
+// FIN USUARIOS

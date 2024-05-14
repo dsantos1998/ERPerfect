@@ -9,6 +9,6 @@
         public string? Email { get; set; }
         public string? DNI { get; set; }
         public DateTime FechaAlta { get; set; }
-        public DateTime FechaBaja { get; set; }
+        public DateTime? FechaBaja { get; set; }
     }
 }
