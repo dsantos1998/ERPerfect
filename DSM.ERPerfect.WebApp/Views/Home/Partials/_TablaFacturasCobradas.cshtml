@@ -1,0 +1,110 @@
+﻿@using DSM.ERPerfect.Models.Entities
+@using DSM.ERPerfect.Models.VM.Home
+@model FacturaVM
+
+@section StyleSheet {
+    <link rel="stylesheet" href="~/lib/datatables/css/datatables.min.css" />
+}
+
+<div class="row">
+    <div class="col-12 my-2 mt-3">
+        <h3>Facturas cobradas</h3>
+    </div>
+    <div class="col-12">
+        <div class="table-responsive">
+            <table id="factura-table" class="table table-striped table-hover table-bordered" style="width: 100%;">
+                <thead class="text-center">
+                    <tr>
+                        <th class="bg-primary text-light border-0">Cliente</th>
+                        <th class="bg-primary text-light border-0">Servicio</th>
+                        <th class="bg-primary text-light border-0">Total</th>
+                        <th class="bg-primary text-light border-0">Tipo pago</th>
+                        <th class="bg-primary text-light border-0">Factura</th>
+                        <th class="bg-primary text-light border-0">Cobrado</th>
+                        @if(Model.CookieUsuario!.Rol.ToUpper() == Roles.Administrador.ToString().ToUpper())
+                        {
+                            <th class="bg-primary text-light border-0 col-1"></th>
+                        }
+                    </tr>
+                </thead>
+                <tbody class="text-start">
+                    @if (Model.Facturas != null)
+                    {
+                        if (Model.Facturas.Count > 0)
+                        {
+                            foreach (var item in Model.Facturas)
+                            {
+                                <tr class="align-middle">
+                                    @{
+                                        var cliente = Model.Clientes.Where(x => x.IdCliente == item.IdCliente).First();
+                                        var facturaServicio = Model.FacturasServicios.Where(x => x.IdFactura == item.IdFactura).First();
+                                        var servicio = Model.Servicios.Where(x => x.IdServicio == facturaServicio.IdServicio).First();
+                                        var tarifaServicio = Model.TarifasServicios.Where(x => x.IdServicio == servicio.IdServicio).First();
+                                        var tarifa = Model.Tarifas.Where(x => x.IdTarifa == tarifaServicio.IdTarifa).First();
+                                        var formaPago = Model.FormasPago.Where(x => x.IdFormaPago == item.IdFormaPago).First();
+                                    }
+                                    <td>@cliente.Nombre @cliente.Apellidos</td>
+                                    <td>@servicio.Descripcion</td>
+                                    <td>@tarifa.Precio€</td>
+                                    <td>@formaPago.Descripcion</td>
+                                    <td>@item.NFactura</td>
+                                    <td>
+                                        @if (item.FechaCobro != null)
+                                        {
+                                            <span class="d-none">@item.FechaCobro.Value.ToString("yyyyMMddHHmmss")</span>
+                                            @item.FechaCobro.Value.ToString("dd/MM/yyyy HH:mm:ss")
+                                        }
+                                    </td>
+                                    @if(Model.CookieUsuario!.Rol.ToUpper() == Roles.Administrador.ToString().ToUpper())
+                                    {
+                                        <td class="d-flex justify-content-start">
+                                            <button class="btn btn-danger me-2" data-bs-toggle="tooltip" data-bs-title="Abonar" onclick="ShowAbonarFactura(@item.IdFactura)"><i class="bi bi-cart-x-fill"></i></button>
+                                        </td>
+                                    }
+                                </tr>
+                            }
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <script src="~/lib/popper/js/popper.min.js"></script>
+
+        <script>
+            var tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+            var tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
+        </script>
+
+        <script>
+            try {
+                LoadDatatableFramework('#factura-table');
+            }
+            catch (error) {
+                window.addEventListener('DOMContentLoaded', () => {
+                    LoadDatatableFramework('#factura-table');
+                });
+            }
+        </script>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="modal-factura-abonada" tabindex="-1" aria-labelledby="modal-factura-abonada-label" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="modal-factura-abonada-label">Cobrar factura</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" id="modal-factura-abonada-close"></button>
+            </div>
+            <div class="modal-body text-start" id="modal-factura-abonada-body">
+                <input type="hidden" id="modal-factura-abonada-id" />
+                <p>Se va a realizar el abono de la factura, ¿Está seguro de que desea continuar?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                <button type="button" class="btn btn-danger" onclick="AbonarFactura()"><i class="bi cart-x-fill me-2"></i>Abonar</button>
+            </div>
+        </div>
+    </div>
+</div>

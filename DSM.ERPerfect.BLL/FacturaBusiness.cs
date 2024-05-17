@@ -24,7 +24,7 @@ namespace DSM.ERPerfect.BLL
 
         public ResultInfo<List<Factura>> GetFacturasPending()
         {
-            return _facturaRepository.GetFacturas();
+            return _facturaRepository.GetFacturasPending();
         }
 
         public ResultInfo<Factura> GetFacturaById(int id)
@@ -124,6 +124,11 @@ namespace DSM.ERPerfect.BLL
         public ResultInfo<List<Top5Servicios>> GetTop5ServicioMes()
         {
             return _facturaRepository.GetTop5ServicioMes();
+        }
+
+        public ResultInfo<int> UpdateFactura(int idFactura, int idCliente, int idServicio, int idFormaPago)
+        {
+            return _facturaRepository.UpdateFactura(idFactura, idCliente, idServicio, idFormaPago);
         }
 
         #endregion

@@ -1,0 +1,28 @@
+﻿@using DSM.ERPerfect.Models.VM.Home
+@model FacturaVM
+
+@{
+    ViewData["Title"] = "Facturas";
+}
+
+@section Scripts{
+    <script src="~/js/ajax/home.js" asp-append-version="true"></script>
+}
+
+<partial name="~/Views/Shared/_TopMenu.cshtml" for="@Model.CookieUsuario" />
+
+<div class="container-fluid p-3">
+    <div class="row text-center m-2 bg-light rounded-0 shadow">
+        <div class="col-sm-12 col-md-2 bg-secondary">
+            <div class="row">
+                <button class="btn btn-secondary text-md-start border-0 rounded-0 col-4 col-sm-4 col-md-12" onclick="LoadFacturasPendientes()">F. Pendientes</button>
+                <button class="btn btn-secondary text-md-start border-0 rounded-0 col-4 col-sm-4 col-md-12" onclick="LoadFacturasCobradas()">F. Cobradas</button>
+                <button class="btn btn-secondary text-md-start border-0 rounded-0 col-4 col-sm-4 col-md-12" onclick="LoadFacturasAbonadas()">F. Abonadas</button>
+            </div>
+        </div>
+        <div class="col-sm-12 col-md-10" id="facturas-container">
+            <partial name="~/Views/Home/Partials/_TablaFacturasPendientes.cshtml" for="@Model" />
+        </div>
+    </div>
+</div>
+

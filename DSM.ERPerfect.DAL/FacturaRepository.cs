@@ -386,6 +386,39 @@ namespace DSM.ERPerfect.DAL
             return result;
         }
 
+        public ResultInfo<int> UpdateFactura(int idFactura, int idCliente, int idServicio, int idFormaPago)
+        {
+            ResultInfo<int> result = new ResultInfo<int>();
+            string procedure = "SP_UPD_Factura";
+            try
+            {
+                using (SQLHelper repo = new SQLHelper(conString, false))
+                {
+                    var dbres = repo.ExecuteProcedure(procedure, new { idFactura = idFactura, IdCliente = idCliente, idServicio = idServicio, IdFormaPago = idFormaPago });
+
+                    if (!string.IsNullOrEmpty(repo.LastErrorString))
+                    {
+                        result.Errors.Add(new ResultError(repo.LastErrorString, false, "FacturaRepository.UpdateFactura"));
+                    }
+                    else if (dbres == null || dbres.Rows.Count == 0)
+                    {
+                        result.Errors.Add(new ResultError($"No se ha podido actualizar la factura con el id: {idFactura}", false, "FacturaRepository.UpdateFactura"));
+                    }
+                    else
+                    {
+                        result.Content = Convert.ToInt32(dbres.Rows[0][0]);
+                    }
+                    dbres?.Dispose();
+                }
+            }
+            catch (Exception ex)
+            {
+                result.Errors.Add(new ResultError(ex.InnerException == null ? ex.Message : ex.InnerException.Message, true, "FacturaRepository.UpdateFactura"));
+            }
+
+            return result;
+        }
+
         #endregion
 
     }

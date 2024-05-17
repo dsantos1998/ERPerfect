@@ -1,0 +1,189 @@
+﻿@using DSM.ERPerfect.Models.VM.Home
+@model FacturaVM
+
+@section StyleSheet {
+    <link rel="stylesheet" href="~/lib/datatables/css/datatables.min.css" />
+}
+
+<div class="row">
+    <div class="col-12 my-2 mt-3">
+        <h3>Facturas pendientes</h3>
+    </div>
+    <div class="col-12 my-2 text-end">
+        <button class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#modal-add-factura-pendiente"><i class="bi bi-plus-square me-2"></i>Añadir</button>
+    </div>
+    <div class="col-12">
+        <div class="table-responsive">
+            <table id="factura-pendiente-table" class="table table-striped table-hover table-bordered" style="width: 100%;">
+                <thead class="text-center">
+                    <tr>
+                        <th class="bg-primary text-light border-0">Cliente</th>
+                        <th class="bg-primary text-light border-0">Servicio</th>
+                        <th class="bg-primary text-light border-0">Total</th>
+                        <th class="bg-primary text-light border-0">Tipo pago</th>
+                        <th class="bg-primary text-light border-0">Pendiente</th>
+                        <th class="bg-primary text-light border-0 col-1"></th>
+                    </tr>
+                </thead>
+                <tbody class="text-start">
+                    @if (Model.Facturas != null)
+                    {
+                        if (Model.Facturas.Count > 0)
+                        {
+                            foreach (var item in Model.Facturas)
+                            {
+                                <tr class="align-middle">
+                                    @{
+                                        var cliente = Model.Clientes.Where(x => x.IdCliente == item.IdCliente).First();
+                                        var facturaServicio = Model.FacturasServicios.Where(x => x.IdFactura == item.IdFactura).First();
+                                        var servicio = Model.Servicios.Where(x => x.IdServicio == facturaServicio.IdServicio).First();
+                                        var tarifaServicio = Model.TarifasServicios.Where(x => x.IdServicio == servicio.IdServicio).First();
+                                        var tarifa = Model.Tarifas.Where(x => x.IdTarifa == tarifaServicio.IdTarifa).First();
+                                        var formaPago = Model.FormasPago.Where(x => x.IdFormaPago == item.IdFormaPago).First();
+                                    }
+                                    <td>@cliente.Nombre @cliente.Apellidos</td>
+                                    <td>@servicio.Descripcion</td>
+                                    <td>@tarifa.Precio€</td>
+                                    <td>@formaPago.Descripcion</td>
+                                    <td>
+                                        <span class="d-none">@item.FechaCreacion.ToString("yyyyMMddHHmmss")</span>
+                                        @item.FechaCreacion.ToString("dd/MM/yyyy HH:mm:ss")
+                                    </td>
+                                    <td class="d-flex justify-content-end">
+                                        <button class="btn btn-warning me-2" data-bs-toggle="tooltip" data-bs-title="Editar" onclick="ShowEditarFacturaPendiente(@item.IdFactura)"><i class="bi bi-pencil-fill"></i></button>
+                                        <button class="btn btn-success me-2" data-bs-toggle="tooltip" data-bs-title="Cobrar" onclick="ShowCobrarFacturaPendiente(@item.IdFactura)"><i class="bi bi-currency-exchange"></i></button>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <script src="~/lib/popper/js/popper.min.js"></script>
+
+        <script>
+            var tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+            var tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
+        </script>
+
+        <script>
+            try {
+                LoadDatatableFramework('#factura-pendiente-table');
+            }
+            catch (error) {
+                window.addEventListener('DOMContentLoaded', () => {
+                    LoadDatatableFramework('#factura-pendiente-table');
+                });
+            }
+        </script>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="modal-add-factura-pendiente" tabindex="-1" aria-labelledby="modal-add-factura-pendiente-label" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="modal-add-factura-pendiente-label">Añadir factura</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" id="modal-add-factura-pendiente-close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="form-floating mb-2">
+                    <select class="form-select" id="modal-add-factura-pendiente-cliente">
+                        <option selected>--SELECCIONE UN CLIENTE--</option>
+                        @if(Model.Clientes != null)
+                        {
+                            if(Model.Clientes.Count > 0)
+                            {
+                                foreach (var item in Model.Clientes.Where(x => x.FechaBaja >= DateTime.Now).ToList())
+                                {
+                                    <option value="@item.IdCliente">@item.Nombre @item.Apellidos</option>
+                                }
+                            }
+                        }
+                    </select>
+                    <label for="modal-add-factura-pendiente-cliente">Cliente</label>
+                </div>
+                <div class="form-floating mb-2">
+                    <select class="form-select" id="modal-add-factura-pendiente-servicio">
+                        <option selected>--SELECCIONE UN SERVICIO--</option>
+                        @if (Model.Servicios != null)
+                        {
+                            if (Model.Servicios.Count > 0)
+                            {
+                                foreach (var item in Model.Servicios.Where(x => x.FechaBaja >= DateTime.Now).ToList())
+                                {
+                                    var servicioTarifa = Model.TarifasServicios.Where(x => x.IdServicio == item.IdServicio).First();
+                                    var tarifa = Model.Tarifas.Where(x => x.IdTarifa == servicioTarifa.IdTarifa).First();
+                                    <option value="@item.IdServicio">@item.Descripcion - @tarifa.Precio€</option>
+                                }
+                            }
+                        }
+                    </select>
+                    <label for="modal-add-factura-pendiente-servicio">Servicios</label>
+                </div>
+                <div class="form-floating mb-2">
+                    <select class="form-select" id="modal-add-factura-pendiente-tipo-pago">
+                        <option selected>--SELECCIONE UNA FORMA DE PAGO--</option>
+                        @if (Model.FormasPago != null)
+                        {
+                            if (Model.FormasPago.Count > 0)
+                            {
+                                foreach (var item in Model.FormasPago.Where(x => x.FechaBaja >= DateTime.Now).ToList())
+                                {
+                                    <option value="@item.IdFormaPago">@item.Descripcion</option>
+                                }
+                            }
+                        }
+                    </select>
+                    <label for="modal-add-factura-pendiente-tipo-pago">Forma de pago</label>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                <button type="button" class="btn btn-success" onclick="SaveFacturaPendiente()"><i class="bi bi-plus-square me-2"></i>Añadir</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="modal-edit-factura-pendiente" tabindex="-1" aria-labelledby="modal-edit-factura-pendiente-label" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="modal-edit-factura-pendiente-label">Editar factura</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" id="modal-edit-factura-pendiente-close"></button>
+            </div>
+            <div class="modal-body" id="modal-edit-factura-pendiente-body">
+                
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                <button type="button" class="btn btn-warning" onclick="EditFacturaPendiente()"><i class="bi bi-pencil-fill me-2"></i>Editar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="modal-cobrar-factura-pendiente" tabindex="-1" aria-labelledby="modal-cobrar-factura-pendiente-label" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="modal-cobrar-factura-pendiente-label">Cobrar factura</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" id="modal-cobrar-factura-pendiente-close"></button>
+            </div>
+            <div class="modal-body text-start" id="modal-cobrar-factura-pendiente-body">
+                <input type="hidden" id="modal-cobrar-factura-pendiente-id" />
+                <p>Se va a realizar el cobro de la factura, ¿Está seguro de que desea continuar?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                <button type="button" class="btn btn-success" onclick="CobrarFacturaPendiente()"><i class="bi bi-currency-exchange me-2"></i>Cobrar</button>
+            </div>
+        </div>
+    </div>
+</div>

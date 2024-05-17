@@ -17,5 +17,6 @@ namespace DSM.ERPerfect.BLL.Interfaces
         public ResultInfo<int> GetPendingBills();
         public ResultInfo<List<PaymentBills>> GetPaymentBills();
         public ResultInfo<List<Top5Servicios>> GetTop5ServicioMes();
+        public ResultInfo<int> UpdateFactura(int idFactura, int idCliente, int idServicio, int idFormaPago);
     }
 }

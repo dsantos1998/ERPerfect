@@ -1,0 +1,68 @@
+﻿@using DSM.ERPerfect.Models.VM.Home
+@model FacturaVM
+
+@if (Model != null)
+{
+    if (Model.Factura != null)
+    {
+        <input type="hidden" id="modal-edit-factura-pendiente-id" value="@Model.Factura.IdFactura">
+        <div class="form-floating mb-2">
+            <select class="form-select" id="modal-edit-factura-pendiente-cliente">
+                @if (Model.Clientes != null)
+                {
+                    if (Model.Clientes.Count > 0)
+                    {
+                        var cliente = Model.Clientes.Where(x => x.IdCliente == Model.Factura.IdCliente).First();
+                        <option value="@cliente.IdCliente" selected>@cliente.Nombre @cliente.Apellidos</option>
+
+                        foreach (var item in Model.Clientes.Where(x => x.FechaBaja >= DateTime.Now && Model.Factura.IdCliente != x.IdCliente).ToList())
+                        {
+                            <option value="@item.IdCliente">@item.Nombre @item.Apellidos</option>
+                        }
+                    }
+                }
+            </select>
+            <label for="modal-edit-factura-pendiente-cliente">Cliente</label>
+        </div>
+        <div class="form-floating mb-2">
+            <select class="form-select" id="modal-edit-factura-pendiente-servicio">
+                @if (Model.Servicios != null)
+                {
+                    if (Model.Servicios.Count > 0)
+                    {
+                        var servicio = Model.Servicios.Where(x => x.IdServicio == Model.FacturaServicio!.IdServicio).First();
+                        var servicioTarifa = Model.TarifasServicios.Where(x => x.IdServicio == servicio.IdServicio).First();
+                        var tarifa = Model.Tarifas.Where(x => x.IdTarifa == servicioTarifa.IdTarifa).First();
+                        <option value="@servicio.IdServicio" selected>@servicio.Descripcion - @tarifa.Precio€</option>
+
+                        foreach (var item in Model.Servicios.Where(x => x.FechaBaja >= DateTime.Now && x.IdServicio != servicio.IdServicio).ToList())
+                        {
+                            var servicioTarifaItem = Model.TarifasServicios.Where(x => x.IdServicio == item.IdServicio).First();
+                            var tarifaItem = Model.Tarifas.Where(x => x.IdTarifa == servicioTarifaItem.IdTarifa).First();
+                            <option value="@item.IdServicio">@item.Descripcion - @tarifaItem.Precio€</option>
+                        }
+                    }
+                }
+            </select>
+            <label for="modal-edit-factura-pendiente-servicio">Servicios</label>
+        </div>
+        <div class="form-floating mb-2">
+            <select class="form-select" id="modal-edit-factura-pendiente-tipo-pago">
+                @if (Model.FormasPago != null)
+                {
+                    if (Model.FormasPago.Count > 0)
+                    {
+                        var formaPago = Model.FormasPago.Where(x => x.IdFormaPago == Model.Factura.IdFormaPago).First();
+                        <option value="@formaPago.IdFormaPago" selected>@formaPago.Descripcion</option>
+
+                        foreach (var item in Model.FormasPago.Where(x => x.FechaBaja >= DateTime.Now && x.IdFormaPago != Model.Factura.IdFormaPago).ToList())
+                        {
+                            <option value="@item.IdFormaPago">@item.Descripcion</option>
+                        }
+                    }
+                }
+            </select>
+            <label for="modal-edit-factura-pendiente-tipo-pago">Forma de pago</label>
+        </div>
+    }
+}
