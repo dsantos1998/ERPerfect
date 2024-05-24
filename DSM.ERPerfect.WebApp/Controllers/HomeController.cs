@@ -616,20 +616,23 @@ namespace DSM.ERPerfect.WebApp.Controllers
             }
             result.Facturas = resultFacturas.Content;
 
-            if (resultFacturas.Content.Count > 0)
+            if(resultFacturas.Content != null)
             {
-                List<FacturaServicio> facturaServicios = new List<FacturaServicio>();
-                foreach (var item in resultFacturas.Content)
+                if (resultFacturas.Content.Count > 0)
                 {
-                    var resultFacturaServicio = _facturaServicioBusiness.GetFacturaServicioByIdFactura(item.IdFactura);
-                    if (resultFacturaServicio.HasErrors)
+                    List<FacturaServicio> facturaServicios = new List<FacturaServicio>();
+                    foreach (var item in resultFacturas.Content)
                     {
-                        LoggedErrors(_logger, resultFacturaServicio.Errors);
-                        return SendErrorsToView(resultFacturaServicio.Errors);
+                        var resultFacturaServicio = _facturaServicioBusiness.GetFacturaServicioByIdFactura(item.IdFactura);
+                        if (resultFacturaServicio.HasErrors)
+                        {
+                            LoggedErrors(_logger, resultFacturaServicio.Errors);
+                            return SendErrorsToView(resultFacturaServicio.Errors);
+                        }
+                        facturaServicios.AddRange(resultFacturaServicio.Content);
                     }
-                    facturaServicios.AddRange(resultFacturaServicio.Content);
+                    result.FacturasServicios = facturaServicios;
                 }
-                result.FacturasServicios = facturaServicios;
             }
 
             // Get tarifas
@@ -943,7 +946,7 @@ namespace DSM.ERPerfect.WebApp.Controllers
             }
             result.FormasPago = resultFormasPago.Content;
 
-            return PartialView("~/Views/Home/Partials/_TablaFacturasCobradas.cshtml", result);
+            return PartialView("~/Views/Home/Partials/_TablaFacturasAbonadas.cshtml", result);
         }
 
         #endregion
